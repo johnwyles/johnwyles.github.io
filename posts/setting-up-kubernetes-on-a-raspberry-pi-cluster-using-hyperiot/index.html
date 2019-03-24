@@ -35,14 +35,14 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          4 min read
+          5 min read
         </div></div>
     </header>
     <div class="post-content">
       
 
 <p>This guide uses a <a href="httpshypriot.com">Hyperiot</a> blog <a href="https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/">entry</a>
-as a massive starting point but goes further to show the steps <em>I</em> took in order
+as a massive starting point but goes further to show the steps I took in order
 to get my kubernetes cluster of three Raspberry Pi computers running. This guide
 addresses much of the troubleshooting done to fill the gaps and/or &ldquo;bugs&rdquo; on
 this blog entry and applying it to my setup.</p>
@@ -278,7 +278,11 @@ apt-get update <span style="color:#f92672">&amp;&amp;</span> apt-get install -y 
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubeadm init --pod-network-cidr <span style="color:#ae81ff">10</span>.244.0.0/16 --apiserver-advertise-address<span style="color:#f92672">=</span><span style="color:#ae81ff">192</span>.168.1.101</code></pre></td></tr></table>
 </div>
 </div></p></li>
+</ol>
 
+<p><strong>NOTE DOWN THE LAST LINE OF THE OUTPUT FROM THE ABOVE</strong></p>
+
+<ol>
 <li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -293,7 +297,7 @@ sudo chown <span style="color:#66d9ef">$(</span>id -u<span style="color:#66d9ef"
 </div>
 </div></p></li>
 
-<li><p><strong>ON ALL NODES BUT THE MASTER NODE</strong> You will want to run:
+<li><p><strong>ON ALL NODES BUT THE MASTER NODE</strong> You will want to run this (substituting this for the line output from <em>Step 8</em> above):
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
@@ -340,6 +344,52 @@ sudo chown <span style="color:#66d9ef">$(</span>id -u<span style="color:#66d9ef"
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -sSL https://rawgit.com/coreos/flannel/v0.11.0/Documentation/kube-flannel.yml | sed <span style="color:#e6db74">&#34;s/amd64/arm/g&#34;</span> | kubectl create -f -</code></pre></td></tr></table>
+</div>
+</div></p></li>
+
+<li><p><strong>ONLY ON THE MASTER NODE:</strong> Run the following command:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get po --all-namespaces</code></pre></td></tr></table>
+</div>
+</div></p>
+
+<p>To see if you get the expected output:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    NAMESPACE     NAME                          READY   STATUS    RESTARTS   AGE
+    kube-system   coredns-86c58d9df4-6nr8c      <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
+    kube-system   coredns-86c58d9df4-vz7nf      <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
+    kube-system   etcd-pi1                      <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
+    kube-system   kube-apiserver-pi1            <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
+    kube-system   kube-controller-manager-pi1   <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
+    kube-system   kube-flannel-ds-arm-ht9lx     <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          24m
+    kube-system   kube-flannel-ds-arm-lrgbv     <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          24m
+    kube-system   kube-flannel-ds-arm-r7lsq     <span style="color:#ae81ff">0</span>/1     Pending   <span style="color:#ae81ff">0</span>          24m
+    kube-system   kube-proxy-jkrdd              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
+    kube-system   kube-proxy-ng2qd              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          20h
+    kube-system   kube-proxy-wwzmm              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          20h
+    kube-system   kube-scheduler-pi1            <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
+    </code></pre></td></tr></table>
 </div>
 </div></p></li>
 </ol>
