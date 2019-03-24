@@ -305,7 +305,20 @@ for the IP address of your master node):</p>
 </div>
 </div>
 
-<p><strong>NOTE DOWN THE LAST LINE OF THE OUTPUT FROM THE ABOVE</strong></p></li>
+<p><strong>NOTE DOWN THE LAST LINE OF THE OUTPUT FROM THE ABOVE</strong> It should look like
+the following:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubeadm join <span style="color:#ae81ff">192</span>.168.1.121:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --discovery-token-ca-cert-hash sha256:dbcc7dfe885966a10483acde9dc536cb1215acd16a9b12fe04847efcaaba448
+    </code></pre></td></tr></table>
+</div>
+</div></p></li>
 
 <li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run:</p>
 
@@ -331,9 +344,11 @@ this for the line output from <em>Step 8</em> above):</p>
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubeadm join --token<span style="color:#f92672">=</span>bb14ca.e8bbbedf40c58788 <span style="color:#ae81ff">192</span>.168.1.101
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubeadm join <span style="color:#ae81ff">192</span>.168.1.121:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --discovery-token-ca-cert-hash sha256:dbcc7dfe885966a10483acde9dc536cb1215acd16a9b12fe04847efcaaba448
     </code></pre></td></tr></table>
 </div>
 </div></li>
