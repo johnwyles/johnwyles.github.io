@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Setting up Kubernetes on a Raspberry Pi cluster using Raspian // John Wyles dot github dot io</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <base href="https://johnwyles.github.io/" />
+    <link rel="stylesheet" href="https://johnwyles.github.io/css/main.min.ed2bee65dbc2f611ff1a2ca5cfa6d7ec362a8e79fea5cf61bb5213445359e232.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="./avatar.jpg" /></a>
+      <h1>John Wyles dot github dot io</h1>
+      <p>A technical blog on Go, Kubernetes, 3D printing, Raspberry Pi, and other assorted personal projects</p>
+      <div class="app-header-social">
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Setting up Kubernetes on a Raspberry Pi cluster using Raspian</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Mar 25, 2019
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          2 min read
+        </div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p><strong>NOTE:</strong> This guide was based on <a href="https://github.com/alexellis/k8s-on-raspbian/blob/master/GUIDE.md">a gist by GitHub user alexellis</a> for setting up Kubernetes on Raspbian as well as <a href="https://gist.github.com/alexellis/a7b6c8499d9e598a285669596e9cdfa2">a gist
+getting started with Raspian for each node</a> which I have made some minor additions to in
+this post.</p>
+
+<h2 id="assumptions">Assumptions</h2>
+
+<ul>
+<li>You have more than 1 Raspberry Pi with at least an 8GB SD card for each</li>
+<li>You want all of your Raspberry Pi&rsquo;s to have a static IP</li>
+<li>You desire all of your networking and orchestration over WIFI rather than
+Ethernet</li>
+<li>For troubleshooting that you have access to your routers administrative panel
+to see attached devices and their IP address</li>
+<li>For further troubleshooting you may require Ethernet access for diagnosis and
+further setup</li>
+</ul>
+
+<h2 id="steps">Steps</h2>
+
+<ol>
+<li>Clone my <a href="https://github.com/johnwyles/raspberry-pi-kubernetes-cluster">Raspberry Pi Kubernetes Cluster repository</a>
+and change to the <code>raspian</code> directory:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    git clone https://github.com/johnwyles/raspberry-pi-kubernetes-cluster.git
+    cd raspberry-pi-kubernetes-cluster/raspbian
+    </code></pre></td></tr></table>
+</div>
+</div></li>
+<li>Download the latest Raspbian Lite image (as of writing this was:
+<code>2018-11-13</code> <code>Raspbian Stretch Lite</code> ) to the <code>raspberry-pi-kubernetes-cluster/raspbian</code> directory we <code>cd</code>&lsquo;ed into above:
+<a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian Images</a></li>
+<li>Insert an SD card you are ready to flash to and flash the SD card with the
+image:
+
+<ul>
+<li>If you are on a Mac use a software like
+<a href="https://www.balena.io/etcher/">balena Etcher</a> to flash the image to <strong>only</strong>
+one of the Raspberry Pi SD cards that will be in your cluster. This machine will
+allow us to image all of the subsequent Raspberry Pi machines in this cluster.</li>
+<li>If you are on a Linux machine use <code>dd</code>:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    <span style="color:#75715e"># Change &#34;2018-11-13-raspbian-stretch-lite.img&#34; to whatever the latest</span>
+    <span style="color:#75715e"># image file name is and &#34;/dev/sda&#34; to the device output from the `lsblk`</span>
+    <span style="color:#75715e"># command when</span>
+    time dd <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span><span style="color:#ae81ff">2018</span>-11-13-raspbian-stretch-lite.img of<span style="color:#f92672">=</span>/dev/sda bs<span style="color:#f92672">=</span>1M
+    </code></pre></td></tr></table>
+</div>
+</div></li>
+</ul></li>
+<li>Remount the SD card now that it has been imaged:
+
+<ul>
+<li>On Mac simply unplugging and replugging in the card should do</li>
+<li>On Linux (substituting <code>/dev/sda1</code> for whatever device shows up in the
+output from <code>lsblk</code>):
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">      umount /dev/sda1
+      umount /dev/sda2
+      mkdir -p /mnt/boot
+      mount /dev/sda1 /mnt/boot
+      </code></pre></td></tr></table>
+</div>
+</div></li>
+</ul></li>
+<li>Eject or unmount the SD card and put it into a Raspberry Pi connected by
+Ethernet and power it on</li>
+<li>SSH</li>
+</ol>
+
+    </div>
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "johnwyles-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </article>
+
+    </main>
+  </body>
+</html>
