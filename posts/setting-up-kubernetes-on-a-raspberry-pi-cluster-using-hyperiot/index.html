@@ -1,0 +1,352 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Setting Up Kubernetes on a Raspberry Pi Cluster Using Hyperiot // John Wyles dot github dot io</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <base href="https://johnwyles.github.io/" />
+    <link rel="stylesheet" href="https://johnwyles.github.io/css/main.min.ed2bee65dbc2f611ff1a2ca5cfa6d7ec362a8e79fea5cf61bb5213445359e232.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="./avatar.jpg" /></a>
+      <h1>John Wyles dot github dot io</h1>
+      <p>A technical blog on Go, Kubernetes, 3D printing, Raspberry Pi, and other assorted personal projects</p>
+      <div class="app-header-social">
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Setting Up Kubernetes on a Raspberry Pi Cluster Using Hyperiot</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Mar 23, 2019
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          4 min read
+        </div></div>
+    </header>
+    <div class="post-content">
+      
+
+<p>This guide uses a <a href="httpshypriot.com">Hyperiot</a> blog <a href="https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/">entry</a>
+as a massive starting point but goes further to show the steps <em>I</em> took in order
+to get my kubernetes cluster of three Raspberry Pi computers running. This guide
+addresses much of the troubleshooting done to fill the gaps and/or &ldquo;bugs&rdquo; on
+this blog entry and applying it to my setup.</p>
+
+<h2 id="assumptions">Assumptions</h2>
+
+<ul>
+<li>You have more than 1 Raspberry Pi with at least an 8GB SD card for each</li>
+<li>You want your all of your Raspberry Pi&rsquo;s to have a static IP</li>
+<li>You will be doing your networking and orchestration over WIFI rather than Ethernet</li>
+<li>For troubleshooting if the machines join the network with their static IP correctly
+set you have access to your routers administrative panel to see attached devices and
+their IP address</li>
+<li>For further troubleshooting you may require Ethernet access for diagnosis and further setup</li>
+</ul>
+
+<h2 id="steps">Steps</h2>
+
+<h3 id="setup">Setup</h3>
+
+<ol>
+<li><p><a href="https://github.com/hypriot/image-builder-rpi/releases">Download the latest Hyperiot disk image</a>
+to a new directory named <code>Hyperiot</code> and note the version number (as of writing:
+<code>1.10.0</code>)</p></li>
+
+<li><p>Open a file in this directory named <code>wifi.yaml</code> with the contents of the below,
+editing for your specific network and also <strong>make sure your update the section
+for SSH <code>authorized_keys</code> with your SSH public key</strong>:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 1
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 5
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 6
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">20
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">21
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">22
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">23
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">24
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">32
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">33
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">34
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">37
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">38
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">43
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="display:block;width:100%;background-color:#3c3d38">hostname: pi1
+</span>manage_etc_hosts: <span style="color:#66d9ef">true</span>
+
+users:
+  - name: pi
+<span style="display:block;width:100%;background-color:#3c3d38">    gecos: <span style="color:#e6db74">&#34;Raspberry Pi Administrator #1&#34;</span>
+</span>    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: users,docker,video
+<span style="display:block;width:100%;background-color:#3c3d38">    plain_text_passwd: YOUR_PI_PASSWORD_HERE
+</span>    lock_passwd: <span style="color:#66d9ef">false</span>
+    ssh_pwauth: <span style="color:#66d9ef">false</span>
+    chpasswd: { expire: <span style="color:#66d9ef">false</span> }
+
+package_upgrade: <span style="color:#66d9ef">true</span>
+
+write_files:
+  - content: <span style="color:#e6db74">|
+</span><span style="color:#e6db74">        allow-hotplug wlan0</span>
+        iface wlan0 inet static
+<span style="display:block;width:100%;background-color:#3c3d38">            address <span style="color:#ae81ff">192.168</span>.<span style="color:#ae81ff">1.101</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">            netmask <span style="color:#ae81ff">255.255</span>.<span style="color:#ae81ff">255.0</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">            gateway <span style="color:#ae81ff">192.168</span>.<span style="color:#ae81ff">1.1</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">            dns-nameservers <span style="color:#ae81ff">8.8</span>.<span style="color:#ae81ff">8.8</span> <span style="color:#ae81ff">8.8</span>.<span style="color:#ae81ff">4.4</span>
+</span>        wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+        iface default inet static
+    path: /etc/network/interfaces.d/wlan0
+  - content: <span style="color:#e6db74">|
+</span><span style="color:#e6db74">        ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev</span>
+        update_config=<span style="color:#ae81ff">1</span>
+        country=US
+        network={
+<span style="display:block;width:100%;background-color:#3c3d38">        ssid=<span style="color:#e6db74">&#34;YOUR_WIFI_SSID_HERE&#34;</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">        psk=<span style="color:#e6db74">&#34;YOUR_WIFI_PASSWORD_HERE&#34;</span>
+</span>        }
+    path: /etc/wpa_supplicant/wpa_supplicant.conf
+  - content: <span style="color:#e6db74">|
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#e6db74">        ssh-rsa AAAA...YOUR_SSH_PUBLIC_KEY_HERE... YOUR_USERNAME@YOUR_DOMAIN</span>
+</span>    path: /home/pi/.ssh/authorized_keys
+
+runcmd:
+  - <span style="color:#e6db74">&#39;systemctl restart avahi-daemon&#39;</span>
+  - <span style="color:#e6db74">&#39;ifup wlan0&#39;</span></code></pre></td></tr></table>
+</div>
+</div></p></li>
+
+<li><p>Install the <a href="https://github.com/hypriot/flash/releases">flash utility for Hypriot</a>
+changing the version to the latest (i.e. the <code>2.3.0</code> below):</p></li>
+</ol>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">brew install pv
+brew install awscli
+<span style="display:block;width:100%;background-color:#3c3d38">curl -LO https://github.com/hypriot/flash/releases/download/2.3.0/flash
+</span>chmod +x flash
+sudo mv flash /usr/local/bin/flash</code></pre></td></tr></table>
+</div>
+</div>
+
+<h3 id="repeated-for-each-sd-card-raspberry-pi-in-the-cluster">Repeated for each SD card / Raspberry Pi in the cluster</h3>
+
+<ol>
+<li><p>Insert an SD card ready for formatting</p></li>
+
+<li><p>On mac run <code>diskutil</code> to find the SD card as a disk</p></li>
+
+<li><p>Update the <code>wifi.yaml</code> file created earlier with the different information
+for each machine (e.g. IP address, hostname, username, etc.)</p></li>
+
+<li><p>Run, <strong>changing the hostname each time</strong>, and when prompted make sure the disk
+the utility finds is the SD card present in <code>diskutil</code>:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">7
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">8
+</span></span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">flash <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --hostname pi1 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --bootconf files/config.txt <span style="color:#ae81ff">\
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    --ssid YOUR_WIFI_SSID_HERE <span style="color:#ae81ff">\
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    --password  YOUR_WIFI_PASSWORD_HERE <span style="color:#ae81ff">\
+</span></span><span style="color:#ae81ff"></span>    --clusterlab true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --userdata files/wifi.yaml <span style="color:#ae81ff">\
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    hypriotos-rpi-v1.10.0.img</span></code></pre></td></tr></table>
+</div>
+</div></p></li>
+
+<li><p>Insert the flashed Hyperiot SD card into the Raspberry Pi and power it on. You
+should be able to watch the machine show up in your attached devices on your router.
+Ensure that it has the static IP address you have set in <code>wifi.yaml</code>. If you
+see the machine come online as a dynamic IP address you did not expect you will need
+to attach the Raspberry Pi to Ethernet and perform some modifications of the files:</p>
+
+<ul>
+<li><code>/etc/hostname</code></li>
+<li><code>/etc/hosts</code></li>
+<li><code>/etc/network/interfaces.d/wlan0</code></li>
+<li><code>/etc/ssh/sshd_config</code></li>
+<li><code>/etc/wpa_supplicant/wpa_supplicant.conf</code></li>
+<li><code>/home/pi/.ssh/authorized_keys</code></li>
+</ul></li>
+
+<li><p>SSH to the machine you have just setup in <code>wifi.yaml</code>:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssh -i ~/.ssh/YOUR_PRIVATE_KEY_FILENAME_HERE pi@pi1.local</code></pre></td></tr></table>
+</div>
+</div></p></li>
+
+<li><p>Become root
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo su -</code></pre></td></tr></table>
+</div>
+</div></p></li>
+
+<li><p>Install kubernetes repository and kubernetes itself:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+echo <span style="color:#e6db74">&#34;deb http://apt.kubernetes.io/ kubernetes-xenial main&#34;</span> &gt; /etc/apt/sources.list.d/kubernetes.list
+apt-get update <span style="color:#f92672">&amp;&amp;</span> apt-get install -y kubeadm</code></pre></td></tr></table>
+</div>
+</div></p></li>
+
+<li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run (substituting the IP address for the IP address of your master node):
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubeadm init --pod-network-cidr <span style="color:#ae81ff">10</span>.244.0.0/16 --apiserver-advertise-address<span style="color:#f92672">=</span><span style="color:#ae81ff">192</span>.168.1.101</code></pre></td></tr></table>
+</div>
+</div></p></li>
+
+<li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown <span style="color:#66d9ef">$(</span>id -u<span style="color:#66d9ef">)</span>:<span style="color:#66d9ef">$(</span>id -g<span style="color:#66d9ef">)</span> $HOME/.kube/config</code></pre></td></tr></table>
+</div>
+</div></p></li>
+
+<li><p><strong>ON ALL NODES BUT THE MASTER NODE</strong> You will want to run:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubeadm join --token<span style="color:#f92672">=</span>bb14ca.e8bbbedf40c58788 <span style="color:#ae81ff">192</span>.168.1.101</code></pre></td></tr></table>
+</div>
+</div></p></li>
+
+<li><p><strong>ONLY ON THE MASTER NODE</strong> Wait for 2 minutes and then run:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get nodes</code></pre></td></tr></table>
+</div>
+</div></p>
+
+<ul>
+<li>You should see output like the following:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    NAME   STATUS     ROLES    AGE   VERSION
+    pi1    NotReady   master   20h   v1.13.4
+    pi2    NotReady   &lt;none&gt;   19h   v1.13.4
+    pi3    NotReady   &lt;none&gt;   19h   v1.13.4
+    </code></pre></td></tr></table>
+</div>
+</div></li>
+</ul></li>
+
+<li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run the following (substituting the version number for <a href="https://github.com/coreos/flannel/releases">whatever is latest version on the flannel releases</a>:
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -sSL https://rawgit.com/coreos/flannel/v0.11.0/Documentation/kube-flannel.yml | sed <span style="color:#e6db74">&#34;s/amd64/arm/g&#34;</span> | kubectl create -f -</code></pre></td></tr></table>
+</div>
+</div></p></li>
+</ol>
+
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

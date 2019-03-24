@@ -6,10 +6,20 @@
     <description>Recent content on John Wyles dot github dot io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 23 Mar 2019 02:48:55 -0700</lastBuildDate>
+    <lastBuildDate>Sat, 23 Mar 2019 10:44:22 -0700</lastBuildDate>
     
 	<atom:link href="https://johnwyles.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Setting Up Kubernetes on a Raspberry Pi Cluster Using Hyperiot</title>
+      <link>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-hyperiot/</link>
+      <pubDate>Sat, 23 Mar 2019 10:44:22 -0700</pubDate>
+      
+      <guid>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-hyperiot/</guid>
+      <description>This guide uses a Hyperiot blog entry as a massive starting point but goes further to show the steps I took in order to get my kubernetes cluster of three Raspberry Pi computers running. This guide addresses much of the troubleshooting done to fill the gaps and/or &amp;ldquo;bugs&amp;rdquo; on this blog entry and applying it to my setup.
+Assumptions  You have more than 1 Raspberry Pi with at least an 8GB SD card for each You want your all of your Raspberry Pi&amp;rsquo;s to have a static IP You will be doing your networking and orchestration over WIFI rather than Ethernet For troubleshooting if the machines join the network with their static IP correctly set you have access to your routers administrative panel to see attached devices and their IP address For further troubleshooting you may require Ethernet access for diagnosis and further setup  Steps Setup  Download the latest Hyperiot disk image to a new directory named Hyperiot and note the version number (as of writing: 1.</description>
+    </item>
     
     <item>
       <title>My First Post</title>
@@ -17,7 +27,7 @@
       <pubDate>Sat, 23 Mar 2019 02:48:55 -0700</pubDate>
       
       <guid>https://johnwyles.github.io/posts/my-first-post/</guid>
-      <description></description>
+      <description>This is my first post using Hugo.</description>
     </item>
     
   </channel>
