@@ -12,7 +12,7 @@
     
     
     <item>
-      <title>Setting Up Kubernetes on a Raspberry Pi cluster using Raspian</title>
+      <title>Setting up Kubernetes on a Raspberry Pi cluster using Raspian</title>
       <link>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-raspbian/</link>
       <pubDate>Mon, 25 Mar 2019 00:06:36 -0700</pubDate>
       
@@ -22,7 +22,7 @@ Assumptions  You have more than 1 Raspberry Pi with at least an 8GB SD card for 
     </item>
     
     <item>
-      <title>Setting Up Kubernetes on a Raspberry Pi Cluster Using Hyperiot</title>
+      <title>Setting up Kubernetes on a Raspberry Pi cluster using Hyperiot</title>
       <link>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-hyperiot/</link>
       <pubDate>Sat, 23 Mar 2019 10:44:22 -0700</pubDate>
       
