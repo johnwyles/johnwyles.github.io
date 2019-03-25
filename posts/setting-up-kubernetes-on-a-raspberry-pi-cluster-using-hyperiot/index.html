@@ -41,22 +41,23 @@
     <div class="post-content">
       
 
-<p>This guide uses a <a href="httpshypriot.com">Hyperiot</a> blog <a href="https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/">entry</a>
+<p>This guide uses a <a href="https://blog.hypriot.com/">Hyperiot</a> blog <a href="https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/">entry</a>
 as a massive starting point but goes further to show the steps I took in order
 to get my kubernetes cluster of three Raspberry Pi computers running. This guide
 addresses much of the troubleshooting done to fill the gaps and/or &ldquo;bugs&rdquo; on
-this blog entry and applying it to my setup.</p>
+<a href="https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/">this blog entry</a> and applying it to my setup.</p>
 
 <h2 id="assumptions">Assumptions</h2>
 
 <ul>
 <li>You have more than 1 Raspberry Pi with at least an 8GB SD card for each</li>
-<li>You want your all of your Raspberry Pi&rsquo;s to have a static IP</li>
-<li>You will be doing your networking and orchestration over WIFI rather than Ethernet</li>
-<li>For troubleshooting if the machines join the network with their static IP correctly
-set you have access to your routers administrative panel to see attached devices and
-their IP address</li>
-<li>For further troubleshooting you may require Ethernet access for diagnosis and further setup</li>
+<li>You want all of your Raspberry Pi&rsquo;s to have a static IP</li>
+<li>You desire all of your networking and orchestration over WIFI rather than
+Ethernet</li>
+<li>For troubleshooting that you have access to your routers administrative panel
+to see attached devices and their IP address</li>
+<li>For further troubleshooting you may require Ethernet access for diagnosis and
+further setup</li>
 </ul>
 
 <h2 id="steps">Steps</h2>
@@ -169,7 +170,7 @@ for SSH <code>authorized_keys</code> with your SSH public key</strong>:
 </div></p></li>
 
 <li><p>Install the <a href="https://github.com/hypriot/flash/releases">flash utility for Hypriot</a>
-changing the version to the latest (i.e. the <code>2.3.0</code> below):</p>
+changing the version to the latest (as of writing this is <code>2.3.0</code>):</p>
 
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -207,8 +208,8 @@ the utility finds is the SD card present in <code>diskutil</code>:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">6
@@ -218,8 +219,8 @@ the utility finds is the SD card present in <code>diskutil</code>:</p>
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    flash <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>        --hostname pi1 <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>        --bootconf files/config.txt <span style="color:#ae81ff">\
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>        --hostname pi1 <span style="color:#ae81ff">\
+</span></span><span style="color:#ae81ff"></span>        --bootconf files/config.txt <span style="color:#ae81ff">\
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>        --ssid YOUR_WIFI_SSID_HERE <span style="color:#ae81ff">\
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>        --password  YOUR_WIFI_PASSWORD_HERE <span style="color:#ae81ff">\
 </span></span><span style="color:#ae81ff"></span>        --clusterlab true <span style="color:#ae81ff">\
@@ -230,10 +231,12 @@ the utility finds is the SD card present in <code>diskutil</code>:</p>
 </div></li>
 
 <li><p>Insert the flashed Hyperiot SD card into the Raspberry Pi and power it on. You
-should be able to watch the machine show up in your attached devices on your router.
-Ensure that it has the static IP address you have set in <code>wifi.yaml</code>. If you
-see the machine come online as a dynamic IP address you did not expect you will need
-to attach the Raspberry Pi to Ethernet and perform some modifications of the files:</p>
+should be able to watch the machine show up in your attached devices on your
+router. Ensure that it has the static IP address you have set in <code>wifi.yaml</code>. If
+you see the machine come online as a dynamic IP address you did not expect you
+will need to attach the Raspberry Pi to Ethernet and perform some modifications
+of these files (beyond the scope of this writing - please use the comments below
+to discuss):</p>
 
 <ul>
 <li><code>/etc/hostname</code></li>
@@ -257,7 +260,7 @@ to attach the Raspberry Pi to Ethernet and perform some modifications of the fil
 </div>
 </div></li>
 
-<li><p>Become root</p>
+<li><p>Become root:</p>
 
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -290,7 +293,7 @@ to attach the Raspberry Pi to Ethernet and perform some modifications of the fil
 </div></li>
 
 <li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run (substituting the IP address
-for the IP address of your master node):</p>
+for the IP address of your <em>master</em> node):</p>
 
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -320,7 +323,8 @@ the following:
 </div>
 </div></p></li>
 
-<li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run:</p>
+<li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run this to capture the
+kubernetes configuration:</p>
 
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -455,6 +459,28 @@ the version number for <a href="https://github.com/coreos/flannel/releases">what
 </div></li>
 </ol>
 
+    </div>
+    <div>
+      <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "johnwyles" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
     </div>
   </article>
 
