@@ -18,7 +18,7 @@
       
       <guid>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-raspbian/</guid>
       <description>NOTE: This guide was based on a gist by GitHub user alexellis for setting up Kubernetes on Raspbian as well as a gist getting started with Raspian for each node which I have made some minor additions to in this post.
-Assumptions  You have more than 1 Raspberry Pi with at least an 8GB SD card for each You want all of your Raspberry Pi&amp;rsquo;s to have a static IP You desire all of your networking and orchestration over WIFI rather than Ethernet For troubleshooting that you have access to your routers administrative panel to see attached devices and their IP address For further troubleshooting you may require Ethernet access for diagnosis and further setup  Steps  Download the latest Raspbian Lite image from here (as of writing this was: 2018-11-13 Raspbian Stretch Lite ): Raspbian Images If you are on a Mac use a software like balena Etcher to flash the image to only one of the Raspberry Pi SD cards that will be in your cluster.</description>
+Assumptions  You have more than 1 Raspberry Pi with at least an 8GB SD card for each You want all of your Raspberry Pi&amp;rsquo;s to have a static IP You desire all of your networking and orchestration over WIFI rather than Ethernet For troubleshooting that you have access to your routers administrative panel to see attached devices and their IP address For further troubleshooting you may require Ethernet access for diagnosis and further setup  Steps  Clone my Raspberry Pi Kubernetes Cluster repository and change to the raspian directory: 1 2 3  git clone https://github.</description>
     </item>
     
     <item>
