@@ -188,9 +188,9 @@ for SSH <code>authorized_keys</code> with your SSH public key</strong>:</p>
         ssh-import-id: None
         lock_passwd: <span style="color:#66d9ef">true</span>
         ssh-authorized-keys:
-<span style="display:block;width:100%;background-color:#3c3d38">          - ssh-rsa AAAA...SSH_PUBLIC_KEY..2A77
+<span style="display:block;width:100%;background-color:#3c3d38">          - ssh-rsa AAAA_SSH_PUBLIC_KEY_NNNN
 </span>
-    package_upgrade: <span style="color:#66d9ef">true</span>
+    package_upgrade: <span style="color:#66d9ef">false</span>
 
     write_files:
       - content: <span style="color:#e6db74">|
@@ -208,12 +208,12 @@ for SSH <code>authorized_keys</code> with your SSH public key</strong>:</p>
           ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
           update_config=<span style="color:#ae81ff">1</span>
           network={
-<span style="display:block;width:100%;background-color:#3c3d38">          ssid=<span style="color:#e6db74">&#34;WIFI_SSID&#34;</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">          psk=<span style="color:#e6db74">&#34;WIFI_PASSWORD&#34;</span>
-</span>          proto=RSN
-          key_mgmt=WPA-PSK
-          pairwise=CCMP
-          auth_alg=OPEN
+<span style="display:block;width:100%;background-color:#3c3d38">            ssid=<span style="color:#e6db74">&#34;WIFI_SSID&#34;</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">            psk=<span style="color:#e6db74">&#34;WIFI_PASSWORD&#34;</span>
+</span>            proto=RSN
+            key_mgmt=WPA-PSK
+            pairwise=CCMP
+            auth_alg=OPEN
           }
         path: /etc/wpa_supplicant/wpa_supplicant.conf
     runcmd:
@@ -298,8 +298,8 @@ the utility finds is the SD card present in <code>diskutil list</code>:</p>
 </span></span><span style="color:#ae81ff"></span>          --bootconf files/config.txt <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>          --config files/wifi-device-init.yml <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>          --userdata files/user-data.yml <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>          --ssid <span style="color:#e6db74">&#34;extropy-5g&#34;</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>          --password <span style="color:#e6db74">&#34;r0ut3r67&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>          --ssid <span style="color:#e6db74">&#34;WIFI_SSID&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>          --password <span style="color:#e6db74">&#34;WIFI_PASSWORD&#34;</span> <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>          --hostname p1 <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>          hypriotos-rpi-v1.10.0.img
     </code></pre></td></tr></table>
