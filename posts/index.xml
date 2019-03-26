@@ -6,20 +6,10 @@
     <description>Recent content in Posts on John Wyles dot github dot io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 Mar 2019 00:06:36 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 24 Mar 2019 10:44:22 -0700</lastBuildDate>
     
 	<atom:link href="https://johnwyles.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Setting up Kubernetes on a Raspberry Pi cluster using Raspian</title>
-      <link>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-raspbian/</link>
-      <pubDate>Mon, 25 Mar 2019 00:06:36 -0700</pubDate>
-      
-      <guid>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-raspbian/</guid>
-      <description>NOTE: This guide was based on a gist by GitHub user alexellis for setting up Kubernetes on Raspbian as well as a gist getting started with Raspian for each node which I have made some minor additions to in this post.
-Assumptions  You have more than 1 Raspberry Pi with at least an 8GB SD card for each You want all of your Raspberry Pi&amp;rsquo;s to have a static IP You desire all of your networking and orchestration over WIFI rather than Ethernet For troubleshooting that you have access to your routers administrative panel to see attached devices and their IP address For further troubleshooting you may require Ethernet access for diagnosis and further setup  Steps  Clone my Raspberry Pi Kubernetes Cluster repository and change to the raspian directory: 1 2 3  git clone https://github.</description>
-    </item>
     
     <item>
       <title>Setting up Kubernetes on a Raspberry Pi cluster using Hypriot</title>
@@ -29,15 +19,6 @@ Assumptions  You have more than 1 Raspberry Pi with at least an 8GB SD card for 
       <guid>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-hypriot/</guid>
       <description>This guide uses a Hypriot blog entry as a massive starting point but goes further to show the steps I took in order to get my kubernetes cluster of three Raspberry Pi computers running. This guide addresses much of the troubleshooting done to fill the gaps and/or &amp;ldquo;bugs&amp;rdquo; on this blog entry and applying it to my setup.
 Assumptions  You have more than 1 Raspberry Pi with at least an 8GB SD card for each You want all of your Raspberry Pi&amp;rsquo;s to have a static IP You desire all of your networking and orchestration over WIFI rather than Ethernet For troubleshooting that you have access to your routers administrative panel to see attached devices and their IP address For further troubleshooting you may require Ethernet access for diagnosis and further setup  Steps Setup  Clone my Raspberry Pi Kubernetes Cluster GitHub repository: 1 2 3  git clone https://github.</description>
-    </item>
-    
-    <item>
-      <title>My First Post</title>
-      <link>https://johnwyles.github.io/posts/my-first-post/</link>
-      <pubDate>Sat, 23 Mar 2019 02:48:55 -0700</pubDate>
-      
-      <guid>https://johnwyles.github.io/posts/my-first-post/</guid>
-      <description>This is my first post using Hugo.</description>
     </item>
     
   </channel>
