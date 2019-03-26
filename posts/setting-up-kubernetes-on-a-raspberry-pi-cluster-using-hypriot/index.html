@@ -133,17 +133,17 @@ for SSH <code>authorized_keys</code> with your SSH public key</strong>:</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 5
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 6
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 7
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">11
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">12
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">13
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">14
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">15
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">16
-</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">17
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">16
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">17
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">18
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">19
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">20
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">21
@@ -176,8 +176,9 @@ for SSH <code>authorized_keys</code> with your SSH public key</strong>:</p>
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#75715e">#cloud-config</span>
 
 <span style="display:block;width:100%;background-color:#3c3d38">    hostname: pi1
-</span>    manage_etc_hosts: <span style="color:#66d9ef">true</span>
-    apt_preserve_sources_list: <span style="color:#66d9ef">true</span>
+</span>    apt_preserve_sources_list: <span style="color:#66d9ef">true</span>
+    manage_etc_hosts: <span style="color:#66d9ef">true</span>
+    package_upgrade: <span style="color:#66d9ef">true</span>
 
     users:
 <span style="display:block;width:100%;background-color:#3c3d38">      - name: pi
@@ -190,7 +191,6 @@ for SSH <code>authorized_keys</code> with your SSH public key</strong>:</p>
         ssh-authorized-keys:
 <span style="display:block;width:100%;background-color:#3c3d38">          - ssh-rsa AAAA_SSH_PUBLIC_KEY_NNNN
 </span>
-    package_upgrade: <span style="color:#66d9ef">true</span>
 
     write_files:
       - content: <span style="color:#e6db74">|
