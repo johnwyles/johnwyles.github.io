@@ -92,15 +92,15 @@ allow us to image all of the subsequent Raspberry Pi machines in this cluster.</
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    <span style="color:#75715e"># Change &#34;2018-11-13-raspbian-stretch-lite.img&#34; to whatever the latest</span>
     <span style="color:#75715e"># image file name is and &#34;/dev/sda&#34; to the device output from the `lsblk`</span>
     <span style="color:#75715e"># command when</span>
-    time dd <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span><span style="color:#ae81ff">2018</span>-11-13-raspbian-stretch-lite.img of<span style="color:#f92672">=</span>/dev/sda bs<span style="color:#f92672">=</span>1M
-    </code></pre></td></tr></table>
+<span style="display:block;width:100%;background-color:#3c3d38">    dd <span style="color:#66d9ef">if</span><span style="color:#f92672">=</span><span style="color:#ae81ff">2018</span>-11-13-raspbian-stretch-lite.img of<span style="color:#f92672">=</span>/dev/sda bs<span style="color:#f92672">=</span>1M
+</span>    </code></pre></td></tr></table>
 </div>
 </div></li>
 </ul></li>
@@ -112,24 +112,34 @@ allow us to image all of the subsequent Raspberry Pi machines in this cluster.</
 output from <code>lsblk</code>):
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">      umount /dev/sda1
-      umount /dev/sda2
-      mkdir -p /mnt/boot
-      mount /dev/sda1 /mnt/boot
-      </code></pre></td></tr></table>
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">      umount /dev/sda1
+</span><span style="display:block;width:100%;background-color:#3c3d38">      umount /dev/sda2
+</span>      mkdir -p /mnt/boot
+<span style="display:block;width:100%;background-color:#3c3d38">      mount /dev/sda1 /mnt/boot
+</span>      </code></pre></td></tr></table>
 </div>
 </div></li>
 </ul></li>
 <li>Eject or unmount the SD card and put it into a Raspberry Pi connected by
 Ethernet and power it on</li>
-<li>SSH</li>
+<li>SSH to the machine using (<strong>login:</strong> _pi) <strong>password:</strong> <em>raspberry</em>):
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">    ssh -l pi <span style="color:#ae81ff">192</span>.168.1.101
+</span>    </code></pre></td></tr></table>
+</div>
+</div></li>
 </ol>
 
     </div>
