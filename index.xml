@@ -12,11 +12,11 @@
     
     
     <item>
-      <title>Setting up Kubernetes on a Raspberry Pi cluster using Hypriot</title>
-      <link>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-hypriot/</link>
+      <title>Setting up Kubernetes and OpenFaaS on a Raspberry Pi cluster using Hypriot</title>
+      <link>https://johnwyles.github.io/posts/setting-up-kubernetes-and-openfaas-on-a-raspberry-pi-cluster-using-hypriot/</link>
       <pubDate>Sun, 24 Mar 2019 10:44:22 -0700</pubDate>
       
-      <guid>https://johnwyles.github.io/posts/setting-up-kubernetes-on-a-raspberry-pi-cluster-using-hypriot/</guid>
+      <guid>https://johnwyles.github.io/posts/setting-up-kubernetes-and-openfaas-on-a-raspberry-pi-cluster-using-hypriot/</guid>
       <description>This guide uses a Hypriot blog entry as a massive starting point but goes further to show the steps I took in order to get my kubernetes cluster of three Raspberry Pi computers running. This guide addresses much of the troubleshooting done to fill the gaps and/or &amp;ldquo;bugs&amp;rdquo; on this blog entry and applying it to my setup.
 Also credit to Alex Ellis&amp;rsquo; Guide for some of the kubernetes troubleshooting.</description>
     </item>
