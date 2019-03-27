@@ -621,18 +621,18 @@ the version number for <a href="https://github.com/coreos/flannel/releases">what
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    NAMESPACE     NAME                          READY   STATUS    RESTARTS   AGE
-    kube-system   coredns-86c58d9df4-6nr8c      <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
-    kube-system   coredns-86c58d9df4-vz7nf      <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
-    kube-system   etcd-pi1                      <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
-    kube-system   kube-apiserver-pi1            <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
-    kube-system   kube-controller-manager-pi1   <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
-    kube-system   kube-flannel-ds-arm-ht9lx     <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          24m
-    kube-system   kube-flannel-ds-arm-lrgbv     <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          24m
-    kube-system   kube-flannel-ds-arm-r7lsq     <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          24m
-    kube-system   kube-proxy-jkrdd              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
-    kube-system   kube-proxy-ng2qd              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          20h
-    kube-system   kube-proxy-wwzmm              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          20h
-    kube-system   kube-scheduler-pi1            <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21h
+    kube-system   coredns-fb8b8dccf-c2x4c       <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          10h
+    kube-system   coredns-fb8b8dccf-kp8qb       <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          10h
+    kube-system   etcd-pi1                      <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          10h
+    kube-system   kube-apiserver-pi1            <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          8m46s
+    kube-system   kube-controller-manager-pi1   <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">1</span>          10h
+    kube-system   kube-flannel-ds-arm-4tvwk     <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          9m9s
+    kube-system   kube-flannel-ds-arm-gfdv5     <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          9m9s
+    kube-system   kube-flannel-ds-arm-xzmlg     <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          9m9s
+    kube-system   kube-proxy-7dz5g              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          22m
+    kube-system   kube-proxy-7gzrv              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          22m
+    kube-system   kube-proxy-hkzz6              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          10h
+    kube-system   kube-scheduler-pi1            <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">1</span>          10h
     </code></pre></td></tr></table>
 </div>
 </div></li>
@@ -661,9 +661,15 @@ a few commands further with validation.</p>
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl get nodes
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    NAME   STATUS   ROLES    AGE   VERSION
+    pi1    Ready    master   10h   v1.14.0
+    pi2    Ready    &lt;none&gt;   22m   v1.14.0
+    pi3    Ready    &lt;none&gt;   22m   v1.14.0
     </code></pre></td></tr></table>
 </div>
 </div></p></li>
