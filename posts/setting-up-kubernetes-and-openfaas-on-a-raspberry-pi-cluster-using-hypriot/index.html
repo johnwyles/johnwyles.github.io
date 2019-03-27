@@ -62,7 +62,7 @@ to see attached devices and their IP address</li>
 further setup</li>
 </ul>
 
-<h2 id="steps">Steps</h2>
+<h2 id="kubernetes-setup">Kubernetes Setup</h2>
 
 <h3 id="preparation">Preparation</h3>
 
@@ -361,7 +361,7 @@ this writing - please use the comments below to discuss):</p>
 </ul></li>
 </ol>
 
-<h3 id="setup-kubernetes">Setup Kubernetes</h3>
+<h3 id="setting-up-the-cluster">Setting up the cluster</h3>
 
 <ol>
 <li><p><strong>ON ALL NODES</strong> SSH to the machine you have just setup in <code>files/user-data.yaml</code>:</p>
@@ -672,7 +672,7 @@ this for the line output from <em>Step 8</em> above):</p>
 </div></li>
 </ol>
 
-<h2 id="testing-it-all-works">Testing it all works</h2>
+<h2 id="testing-the-cluster-works">Testing the cluster works</h2>
 
 <p>In order to test that all the services and setup are running as we expect we run
 a few commands further with validation.</p>
@@ -812,6 +812,9 @@ a few commands further with validation.</p>
 </div>
 </div></p></li>
 </ol>
+
+<p>At this point you are done setting up Kubernetes. However, if you want to
+further setup OpenFaaS, I have outlined those steps below.</p>
 
 <h2 id="setup-openfaas">Setup OpenFaaS</h2>
 
