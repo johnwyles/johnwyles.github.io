@@ -511,11 +511,13 @@ kubernetes configuration:</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    mkdir -p $HOME/.kube
     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
     sudo chown <span style="color:#66d9ef">$(</span>id -u<span style="color:#66d9ef">)</span>:<span style="color:#66d9ef">$(</span>id -g<span style="color:#66d9ef">)</span> $HOME/.kube/config
+    export KUBECONFIG<span style="color:#f92672">=</span>/etc/kubernetes/kubelet.conf
     </code></pre></td></tr></table>
 </div>
 </div></li>
@@ -688,18 +690,15 @@ a few commands further with validation.</p>
 </div>
 </div></p></li>
 
-<li><p>SCP the files <code>files/function.yml</code> and <code>files/dashboard.yml</code> to the master
-node:</p>
+<li><p>SCP the files <code>files/function.yml</code> to the master node:</p>
 
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    scp files/function.yml pi@pi1.local:~/
-    scp files/dashboard.yml pi@pi1.local:~/
     </code></pre></td></tr></table>
 </div>
 </div></li>
@@ -752,31 +751,6 @@ node:</p>
     </code></pre></td></tr></table>
 </div>
 </div></p></li>
-
-<li><p><strong>ONLY ON THE MASTER</strong> Run the following command as the user <code>p1</code> to deploy the dashboard:</p>
-
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl create -f dashboard.yml
-    </code></pre></td></tr></table>
-</div>
-</div>
-
-<p>Now open the dashboard from other hosts by running the proxy:
-<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
-<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
-</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
-</span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl proxy --accept-hosts<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;^.*$&#39;</span> --accept-paths<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;^.*$&#39;</span> &amp;
-    </code></pre></td></tr></table>
-</div>
-</div></p></li>
 </ol>
 
 <h2 id="reset-back-to-initial-status">Reset back to initial status</h2>
@@ -809,6 +783,36 @@ node:</p>
 </div>
 </div></li>
 </ol>
+
+<h2 id="setup-openfaas">Setup OpenFaaS:</h2>
+
+<p>1.
+    <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    git clone https://github.com/openfaas/faas-netes
+    cd faas-netes
+    </code></pre></td></tr></table>
+</div>
+</div></p>
+
+<p>2.
+    <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    git clone https://github.com/openfaas/faas-netes
+    cd faas-netes
+    </code></pre></td></tr></table>
+</div>
+</div></p>
 
     </div>
     <div id="disqus_thread"></div>
