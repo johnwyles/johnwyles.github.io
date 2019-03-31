@@ -1,0 +1,363 @@
+<!doctype html>
+<html>
+  <head>
+    <title>SSH tricks for port forwarding, multiple GitHub accounts, and  using alternative ports // John Wyles dot github dot io</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.54.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <base href="https://johnwyles.github.io/" />
+    <link rel="stylesheet" href="https://johnwyles.github.io/css/main.min.ed2bee65dbc2f611ff1a2ca5cfa6d7ec362a8e79fea5cf61bb5213445359e232.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="/"><img class="app-header-avatar" src="./avatar.jpg" /></a>
+      <h1>John Wyles dot github dot io</h1>
+      <p>A technical blog on Go, Kubernetes, 3D printing, Raspberry Pi, and other assorted personal projects</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/johnwyles"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://twitter.com/johnwyles"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg></a>
+        
+          <a target="_blank" href="https://gitlab.com/johnwyles"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-gitlab">
+  <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">SSH tricks for port forwarding, multiple GitHub accounts, and  using alternative ports</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Mar 30, 2019
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          6 min read
+        </div></div>
+    </header>
+    <div class="post-content">
+      <p>If you are like me you have a home network that, while you are not home, you
+would like to access from nearly anywhere in the world. I am currently using an
+OpenVPN server running on my router with a
+<a href="https://freedns.afraid.org/">FreeDNS afraid.org</a> dynamic DNS entry that is
+perpetually updated with a crontab:</p>
+
+<p>Opening the crontab for my current user with <code>crontab -e</code> we can add an entry
+pulled from
+<a href="https://freedns.afraid.org/dynamic/">the bottom of the Dynamic DNS page under each subdomains &ldquo;quick cron example&rdquo;</a>.  For me this looks like:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#ae81ff">2</span>,7,12,17,22,27,32,37,42,47,52,57 * * * * sleep <span style="color:#ae81ff">55</span> ; wget --no-check-certificate -O - https://freedns.afraid.org/dynamic/update.php?AAAA...NNNN<span style="color:#f92672">=</span> &gt;&gt; /tmp/freedns_@_johnwyles_com.log <span style="color:#ae81ff">2</span>&gt;&amp;<span style="color:#ae81ff">1</span> &amp;</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>Regardless of if you are running an OpenVPN server or not you will likely want a
+fallback way to SSH to a machine in your home network or jump from a machine in
+your network to others.  With DNS taken care above you can now use setup this
+&ldquo;gateway&rdquo; or &ldquo;bastion&rdquo; SSH host on your home network or simply SSH to it
+directly.  If your router settings allow you can simply port-forward from the
+outside a different port than the default of <code>22</code> to your home network machines
+<code>22</code> as I do then I recommend this. However, if you are not able to, as in the
+case of more restrictive features on router software, you will need to modify
+your machines <code>/etc/ssh/sshd_config</code>, find the line for <code>Port</code>, uncomment it,
+and make it something else (i.e. <code>Port 2222</code>).  I highly suggest changing the
+default port for your home networks port forwarding because a large majority of
+the door-knocking brute force software hackers simply defaults to <code>22</code> and does
+not bother testing other ports (it simply takes too much time to find hosts
+running SSH on a non-<code>22</code> port). I use <code>2222</code> ).  Once you have done this you
+will need to reload the <code>ssh</code> service with <code>sudo service ssh restart</code>.</p>
+
+<p>Now, in order to access your host from outside your home network remotely, you
+can use <code>ssh -i ~/.ssh/YOUR_IDENTITY_FILE.rsa -P YOUR_PORT YOUR_USERNAME@YOUR_DYNAMICDNS_HOSTNAME</code>.
+For me this looks like:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span></span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">ssh -i ~/.ssh/johnwyles.rsa <span style="color:#ae81ff">\
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    -P <span style="color:#ae81ff">2222</span> <span style="color:#ae81ff">\
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    johnwyles@johnwyles.com</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>If, instead of accessing this machine in your network directly, you would like
+to &ldquo;jump&rdquo; from it (in this case the host would be known as a <em>bastian host</em>) to
+another machine from within the network you can use  <code>ssh -A -J -i ~/.ssh/YOUR_IDENTITY_FILE.rsa -P 2222 YOUR_USERNAME@YOUR_DYNAMICDNS_HOSTNAME YOUR_USERNAME@YOUR_LOCAL_NETWORK_HOSTNAME</code>.
+For me this looks like:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">6
+</span></span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">ssh -i ~/.ssh/johnwyles.rsa <span style="color:#ae81ff">\
+</span></span><span style="color:#ae81ff"></span>    -A <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    -J <span style="color:#ae81ff">\
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    -P <span style="color:#ae81ff">2222</span> <span style="color:#ae81ff">\
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    johnwyles@johnwyles.com <span style="color:#ae81ff">\
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    pi@pi1.local</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>If, instead of simply SSH-ing to the local machine in your network via the
+bastion host, you would like to port forward a port from a local machine in your
+network through the bastion host you can use <code>ssh -A -J -i ~/.ssh/YOUR_IDENTITY_FILE.rsa -L LOCAL_PORT@YOUR_LOCAL_NETWORK_HOSTNAME:REMOTE_PORT -P 2222 YOUR_USERNAME@YOUR_DYNAMICDNS_HOSTNAME</code>.
+For me, with a service running on port <code>80</code> of one machine, a local port on the
+machine I am SSH-ing from (e.g. my laptop) of <code>8080</code>, another service on another
+machine on <code>443</code>, and a local port on the machine I am SSH-ing from of <code>8443</code>,
+this would look like:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">1
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">3
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">4
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">5
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">6
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">7
+</span></span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">ssh -i ~/.ssh/johnwyles.rsa <span style="color:#ae81ff">\
+</span></span><span style="color:#ae81ff"></span>    -A <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    -J <span style="color:#ae81ff">\
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    -L <span style="color:#ae81ff">8080</span>:pi@octopi.local:80 <span style="color:#ae81ff">\
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    -L <span style="color:#ae81ff">8443</span>:pi@pi1.local:443 <span style="color:#ae81ff">\
+</span></span><span style="color:#ae81ff"></span>    -P <span style="color:#ae81ff">2222</span> <span style="color:#ae81ff">\
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    johnwyles@johnwyles.com</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>If you do not want to have to type all of these things out on the command line
+each time and you would like to capture it once, set-it-and-forget-it, you can
+add all of the above to your <code>~/.ssh/config</code> file in different permutations.
+For me this looks like:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 1
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 2
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 3
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 4
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 5
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 7
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">11
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">12
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">15
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">16
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">17
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">18
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">19
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">20
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">24
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">25
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">26
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">27
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">28
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">29
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">30
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">31
+</span></span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Simply how we access johnwyles.com on port 2222</span>
+<span style="display:block;width:100%;background-color:#3c3d38">Host johnwyles.com
+</span><span style="display:block;width:100%;background-color:#3c3d38">  User johnwyles
+</span><span style="display:block;width:100%;background-color:#3c3d38">  Hostname johnwyles.com
+</span><span style="display:block;width:100%;background-color:#3c3d38">  Port <span style="color:#ae81ff">2222</span>
+</span>
+<span style="color:#75715e"># Using johnwyles.com on port 2222 as a bastion host for octopi.local on port 22</span>
+<span style="display:block;width:100%;background-color:#3c3d38">Host johnwyles.com-octopi
+</span><span style="display:block;width:100%;background-color:#3c3d38">  User pi
+</span><span style="display:block;width:100%;background-color:#3c3d38">  Hostname octopi.local
+</span><span style="display:block;width:100%;background-color:#3c3d38">  Port <span style="color:#ae81ff">2222</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">  ProxyCommand ssh -q -W %h:%p johnwyles.com
+</span>
+<span style="color:#75715e"># This will use johnwyles.com on port 2222 as a bastion host to whatever we want</span>
+<span style="color:#75715e"># (e.g. port forwarding or as a bastion / jump host)</span>
+<span style="display:block;width:100%;background-color:#3c3d38">Host johnwyles.com-bastion
+</span><span style="display:block;width:100%;background-color:#3c3d38">    HostName johnwyles.com
+</span><span style="display:block;width:100%;background-color:#3c3d38">    IdentityFile ~/.ssh/johnwyles.rsa
+</span><span style="display:block;width:100%;background-color:#3c3d38">    Port <span style="color:#ae81ff">2222</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">    User johnwyles
+</span>
+<span style="color:#75715e"># Uses the host johwyles.com on port 2222 to forward traffic and from pi1.local</span>
+<span style="color:#75715e"># on port 80 to the local port 8080 and octopi.local on 443 to the local port</span>
+<span style="color:#75715e"># 8443.</span>
+<span style="display:block;width:100%;background-color:#3c3d38">Host johnwyles.com-port-forwarding
+</span><span style="display:block;width:100%;background-color:#3c3d38">    HostName johnwyles.com
+</span><span style="display:block;width:100%;background-color:#3c3d38">    IdentityFile ~/.ssh/johnwyles.rsa
+</span><span style="display:block;width:100%;background-color:#3c3d38">    LocalForward <span style="color:#ae81ff">8080</span> octopi.local:80
+</span><span style="display:block;width:100%;background-color:#3c3d38">    LocalForward <span style="color:#ae81ff">8443</span> pi1.local:443
+</span><span style="display:block;width:100%;background-color:#3c3d38">    Port <span style="color:#ae81ff">2222</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">    User johnwyles</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>With the SSH configuration file in place you can now just simply run something
+like <code>ssh johnwyles.com-octopi</code> to SSH <em>through</em> <code>johnwyles.com</code> on port <code>2222</code>
+to <code>octopi.local</code>. Similarly if I would like to setup some SSH tunneling of
+services within my home network through the bastion host all I would need to run
+is <code>ssh johnwyles.com-port-forwarding</code>.</p>
+
+<p>Now, with all of that said and some of that understanding, if you are also like
+me you have separate work and personal accounts for GitHub which you may
+(hopefully seldom) require to use on the same machine. Since you do not want to
+mix your work and personal GitHub accounts in the git log history written with
+the wrong identity (if you have see <a href="https://stackoverflow.com/questions/750172/how-to-change-the-author-and-committer-name-and-e-mail-of-multiple-commits-in-gi">this Stack Overflow entry on how to
+back-out those changes in git history</a>
+you will need to let both SSH and git know about each.</p>
+
+<p>For me this involves two separate GitHub <em>identities</em> each with their own GitHub
+account and respective SSH private key.  I specify each of these in the
+<code>~/.ssh/config</code> file as well like this:</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 1
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 2
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 3
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 4
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 7
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># GitHub identity for personal</span>
+<span style="display:block;width:100%;background-color:#3c3d38">Host github.com-johnwyles
+</span>    HostName github.com
+<span style="display:block;width:100%;background-color:#3c3d38">    IdentityFile ~/.ssh/johnwyles.rsa
+</span>    User git
+
+<span style="color:#75715e"># GitHub identity for work</span>
+<span style="display:block;width:100%;background-color:#3c3d38">Host github.com-johnwyles-work
+</span>    HostName github.com
+<span style="display:block;width:100%;background-color:#3c3d38">    IdentityFile ~/.ssh/johnwyles-work.rsa
+</span>    User git</code></pre></td></tr></table>
+</div>
+</div>
+
+<p>Then in each respective git checkout for a particular repository or project I
+have edited the <code>.git/config</code> file and updated it like the following (<strong>note:</strong>
+the <code>github.com</code> is suffixed with <code>-johnwyles</code> as we specified in the
+<code>~/.ssh/config</code> file above):</p>
+
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 8
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79"> 9
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">15
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">16
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">19
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">20
+</span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">21
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7c7c79">22
+</span></span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">[core]
+     repositoryformatversion = <span style="color:#ae81ff">0</span>
+     filemode = <span style="color:#66d9ef">true</span>
+     bare = <span style="color:#66d9ef">false</span>
+     logallrefupdates = <span style="color:#66d9ef">true</span>
+     ignorecase = <span style="color:#66d9ef">true</span>
+ [remote <span style="color:#e6db74">&#34;origin&#34;</span>]
+    <span style="color:#75715e"># Note the suffix below to github.com</span>
+<span style="display:block;width:100%;background-color:#3c3d38">     url = git@github.com-johnwyles:johnwyles/johnwyles.github.io-hugo.git
+</span>     fetch = +refs/heads/<span style="color:#75715e">*:refs/remotes/origin/*</span>
+ [branch <span style="color:#e6db74">&#34;master&#34;</span>]
+     remote = origin
+     merge = refs/heads/master
+ [submodule <span style="color:#e6db74">&#34;public&#34;</span>]
+    <span style="color:#75715e"># A submodule I have for this directory also should have the suffix added</span>
+<span style="display:block;width:100%;background-color:#3c3d38">     url = git@github.com-johnwyles:johnwyles/johnwyles.github.io.git
+</span>     active = <span style="color:#66d9ef">true</span>
+[user]
+    <span style="color:#75715e"># Personal or work email address</span>
+<span style="display:block;width:100%;background-color:#3c3d38">	email = john@johnwyles.com
+</span>    <span style="color:#75715e"># Probably will not change from project to project</span>
+<span style="display:block;width:100%;background-color:#3c3d38">	name = John Wyles</span></code></pre></td></tr></table>
+</div>
+</div>
+
+<p>That should take you pretty far! Good luck!</p>
+
+    </div>
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "johnwyles-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </article>
+
+    </main>
+  </body>
+</html>

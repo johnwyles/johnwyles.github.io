@@ -6,10 +6,20 @@
     <description>Recent content on John Wyles dot github dot io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 27 Mar 2019 10:44:22 -0700</lastBuildDate>
+    <lastBuildDate>Sat, 30 Mar 2019 21:41:06 -0700</lastBuildDate>
     
 	<atom:link href="https://johnwyles.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>SSH tricks for port forwarding, multiple GitHub accounts, and  using alternative ports</title>
+      <link>https://johnwyles.github.io/posts/ssh-tricks-for-port-forwarding-multiple-github-accounts-and-using-alternative-ports/</link>
+      <pubDate>Sat, 30 Mar 2019 21:41:06 -0700</pubDate>
+      
+      <guid>https://johnwyles.github.io/posts/ssh-tricks-for-port-forwarding-multiple-github-accounts-and-using-alternative-ports/</guid>
+      <description>If you are like me you have a home network that, while you are not home, you would like to access from nearly anywhere in the world. I am currently using an OpenVPN server running on my router with a FreeDNS afraid.org dynamic DNS entry that is perpetually updated with a crontab:
+Opening the crontab for my current user with crontab -e we can add an entry pulled from the bottom of the Dynamic DNS page under each subdomains &amp;ldquo;quick cron example&amp;rdquo;.</description>
+    </item>
     
     <item>
       <title>Setting up Kubernetes and OpenFaaS on a Raspberry Pi cluster using Hypriot</title>
