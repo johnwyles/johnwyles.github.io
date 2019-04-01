@@ -55,10 +55,15 @@
 would like to access from nearly anywhere in the world. I am currently using an
 OpenVPN server running on my router with a
 <a href="https://freedns.afraid.org/">FreeDNS afraid.org</a> dynamic DNS entry that is
-perpetually updated with a crontab:</p>
+perpetually updated with a crontab.</p>
 
-<p>Opening the crontab for my current user with <code>crontab -e</code> we can add an entry
-pulled from
+<p>As an aside to the main focus of this article I will describe what I found while
+setting up <a href="https://freedns.afraid.org/">FreeDNS afraid.org</a> up front in case
+you would like to do it.  I found that I didn&rsquo;t need any special daemon running
+on my machine but that the guys at FreeDNS afraid.org had already created a
+backend endpoint to hit which will update my DNS entries for me. In order to do
+this I found that it was as simple as opening the crontab for my current user
+with <code>crontab -e</code> I simply added an entry pulled from
 <a href="https://freedns.afraid.org/dynamic/">the bottom of the Dynamic DNS page under each subdomains &ldquo;quick cron example&rdquo;</a>.  For me this looks like:</p>
 
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">

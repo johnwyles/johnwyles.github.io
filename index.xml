@@ -17,8 +17,8 @@
       <pubDate>Sat, 30 Mar 2019 21:41:06 -0700</pubDate>
       
       <guid>https://johnwyles.github.io/posts/ssh-tricks-for-port-forwarding-multiple-github-accounts-and-using-alternative-ports/</guid>
-      <description>If you are like me you have a home network that, while you are not home, you would like to access from nearly anywhere in the world. I am currently using an OpenVPN server running on my router with a FreeDNS afraid.org dynamic DNS entry that is perpetually updated with a crontab:
-Opening the crontab for my current user with crontab -e we can add an entry pulled from the bottom of the Dynamic DNS page under each subdomains &amp;ldquo;quick cron example&amp;rdquo;.</description>
+      <description>If you are like me you have a home network that, while you are not home, you would like to access from nearly anywhere in the world. I am currently using an OpenVPN server running on my router with a FreeDNS afraid.org dynamic DNS entry that is perpetually updated with a crontab.
+As an aside to the main focus of this article I will describe what I found while setting up FreeDNS afraid.</description>
     </item>
     
     <item>
