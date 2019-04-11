@@ -3,6 +3,23 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://johnwyles.github.io/posts/flashing-the-creality-ender-3-with-a-raspberry-pi/</loc>
+    <lastmod>2019-04-09T15:12:05-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://johnwyles.github.io/</loc>
+    <lastmod>2019-04-09T15:12:05-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://johnwyles.github.io/posts/</loc>
+    <lastmod>2019-04-09T15:12:05-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://johnwyles.github.io/posts/ssh-tricks-for-port-forwarding-multiple-github-accounts-and-using-alternative-ports/</loc>
     <lastmod>2019-03-30T21:41:06-07:00</lastmod>
   </url>
@@ -14,18 +31,6 @@
   
   <url>
     <loc>https://johnwyles.github.io/categories/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://johnwyles.github.io/</loc>
-    <lastmod>2019-03-30T21:41:06-07:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://johnwyles.github.io/posts/</loc>
-    <lastmod>2019-03-30T21:41:06-07:00</lastmod>
     <priority>0</priority>
   </url>
   
