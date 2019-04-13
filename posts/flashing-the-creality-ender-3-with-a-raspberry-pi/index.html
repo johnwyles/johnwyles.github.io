@@ -47,7 +47,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          5 min read
+          6 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -479,6 +479,30 @@ Raspberry Pi</p></li>
 <p>You are now done flashing the board. You can now plug back in the Ender 3 and
 power it on. You may see a blank screen for a moment and then it should show
 the usual screen you see when there is no print in progress.</p>
+
+<h2 id="extra">Extra</h2>
+
+<p>If you are like me you would like to:</p>
+
+<ul>
+<li>Install a BLTouch</li>
+<li>Install stepper motor dampers</li>
+<li>Install the Petsfang dual blower 5015 fan mod</li>
+</ul>
+
+<p>The trick to both the BLTouch with the Petsfang dual 5015 blowers are some
+modifications to the firmware. The 5015 fans whine and there is a fix in the
+TH3D firmware for this as well as some tuning and enabling of the BLTouch.</p>
+
+<p>Also, my Ender 3 came with pressed fit pulleys, and it wasn&rsquo;t until I discovered
+<a href="https://www.youtube.com/watch?v=IjzrNoFnbcI">this YouTube video</a> that I knew
+I was hitting an obstacle that was not readily mentioned elsewhere. For this I
+had to print out modifications (mentioned and linked by the video) that I could
+then install the stepper motor dampers with the press fit pulleys. This required
+inverting the X-axis motor.</p>
+
+<p>All of my modifications to the TH3D firmware are checked in under my fork of the
+repository and you can view those exact differences in <a href="https://github.com/houseofbugs/TH3D-Unified-U1.R2/compare/master...johnwyles:BLTouch-and-Customizations?expand=1">the diff of my fork branch from the master of the TH3D upstream master</a>.</p>
 
     </div>
     <div id="disqus_thread"></div>
