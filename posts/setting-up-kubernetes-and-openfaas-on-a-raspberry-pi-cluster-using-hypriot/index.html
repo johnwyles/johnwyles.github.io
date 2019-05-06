@@ -3,7 +3,7 @@
   <head>
     <title>Setting up Kubernetes and OpenFaaS on a Raspberry Pi cluster using Hypriot // John Wyles dot github dot io</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.55.0" />
+    <meta name="generator" content="Hugo 0.55.5" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="John Doe" />
     <meta name="description" content="" />
@@ -488,7 +488,7 @@ for the IP address of your <em>master</em> node):</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubeadm init --token-ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm init --token-ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
     </code></pre></td></tr></table>
 </div>
 </div></p>
@@ -502,7 +502,7 @@ for the IP address of your <em>master</em> node):</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubeadm init --pod-network-cidr <span style="color:#ae81ff">10</span>.244.0.0/16 <span style="color:#ae81ff">\
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm init --pod-network-cidr <span style="color:#ae81ff">10</span>.244.0.0/16 <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        --apiserver-advertise-address<span style="color:#f92672">=</span><span style="color:#ae81ff">192</span>.168.1.101 <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        --token-ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
     </code></pre></td></tr></table>
@@ -518,7 +518,7 @@ following:
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubeadm join <span style="color:#ae81ff">192</span>.168.1.101:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm join <span style="color:#ae81ff">192</span>.168.1.101:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    --discovery-token-ca-cert-hash sha256:dbcc7dfe885966a10483acde9dc536cb1215acd16a9b12fe04847efcaaba448
     </code></pre></td></tr></table>
 </div>
@@ -594,7 +594,7 @@ this for the line output from <em>Step 7</em> above):</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubeadm join <span style="color:#ae81ff">192</span>.168.1.101:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm join <span style="color:#ae81ff">192</span>.168.1.101:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    --discovery-token-ca-cert-hash sha256:dbcc7dfe885966a10483acde9dc536cb1215acd16a9b12fe04847efcaaba448
     </code></pre></td></tr></table>
 </div>
@@ -801,7 +801,7 @@ a few commands further with validation.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubeadm reset
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm reset
     systemctl stop kubelet &amp; systemctl stop docker
     rm -rf /var/lib/cni/
     rm -rf /var/lib/kubelet/*
