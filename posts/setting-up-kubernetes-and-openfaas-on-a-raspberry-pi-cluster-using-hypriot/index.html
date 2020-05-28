@@ -3,7 +3,7 @@
   <head>
     <title>Setting up Kubernetes and OpenFaaS on a Raspberry Pi cluster using Hypriot // John Wyles dot github dot io</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.55.5" />
+    <meta name="generator" content="Hugo 0.71.0" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="John Doe" />
     <meta name="description" content="" />
@@ -51,18 +51,13 @@
         </div></div>
     </header>
     <div class="post-content">
-      
-
-<p>This guide uses a <a href="https://blog.hypriot.com/">Hypriot</a> blog <a href="https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/">entry</a>
+      <p>This guide uses a <a href="https://blog.hypriot.com/">Hypriot</a> blog <a href="https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/">entry</a>
 as a massive starting point but goes further to show the steps I took in order
 to get my kubernetes cluster of three Raspberry Pi computers running. This guide
 addresses much of the troubleshooting done to fill the gaps and/or &ldquo;bugs&rdquo; on
 <a href="https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/">this blog entry</a> and applying it to my setup.</p>
-
 <p>Also credit to <a href="https://github.com/alexellis/k8s-on-raspbian/blob/master/GUIDE.md">Alex Ellis&rsquo; Guide</a> for some of the kubernetes troubleshooting.</p>
-
 <h2 id="assumptions">Assumptions</h2>
-
 <ul>
 <li>You have more than 1 Raspberry Pi with at least an 8GB SD card for each</li>
 <li>You want all of your Raspberry Pi&rsquo;s to have a static IP</li>
@@ -73,49 +68,49 @@ to see attached devices and their IP address</li>
 <li>For further troubleshooting you may require Ethernet access for diagnosis and
 further setup</li>
 </ul>
-
 <h2 id="kubernetes-setup">Kubernetes Setup</h2>
-
 <h3 id="preparation">Preparation</h3>
-
 <ol>
-<li>Clone my <a href="https://github.com/johnwyles/raspberry-pi-kubernetes-cluster">Raspberry Pi Kubernetes Cluster</a> GitHub repository:
+<li>
+<p>Clone my <a href="https://github.com/johnwyles/raspberry-pi-kubernetes-cluster">Raspberry Pi Kubernetes Cluster</a> GitHub repository:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    git clone https://github.com/johnwyles/raspberry-pi-kubernetes-cluster.git
     cd raspberry-pi-kubernetes-cluster/hypriot/
     </code></pre></td></tr></table>
 </div>
-</div></li>
-<li><a href="https://github.com/hypriot/image-builder-rpi/releases">Download the latest Hypriot disk image</a>
+</div></p>
+</li>
+<li>
+<p><a href="https://github.com/hypriot/image-builder-rpi/releases">Download the latest Hypriot disk image</a>
 to a new directory named <code>Hypriot</code> and note the version number (as of writing:
 <code>1.10.0</code>):
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">    curl -L -O <span style="color:#e6db74">&#34;https://github.com/hypriot/image-builder-rpi/releases/download/v1.10.0/hypriotos-rpi-v1.10.0.img.zip&#34;</span>
 </span><span style="display:block;width:100%;background-color:#3c3d38">    unzip hypriotos-rpi-v1.10.0.img.zip
 </span><span style="display:block;width:100%;background-color:#3c3d38">    rm -f hypriotos-rpi-v1.10.0.img.zip
 </span>    </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Open a file in this directory named <code>files/wifi-devices-init.yml</code> with the contents below,
+</div></p>
+</li>
+<li>
+<p>Open a file in this directory named <code>files/wifi-devices-init.yml</code> with the contents below,
 editing for your specific network:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -123,7 +118,7 @@ editing for your specific network:</p>
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    hostname: pi1
     wifi:
       interfaces:
@@ -132,15 +127,15 @@ editing for your specific network:</p>
 </span><span style="display:block;width:100%;background-color:#3c3d38">          password: <span style="color:#e6db74">&#34;WIFI_PASSWORD&#34;</span>
 </span>    </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Open a file in this directory named <code>files/user-data.yaml</code> with the contents of the below,
+</div>
+</li>
+<li>
+<p>Open a file in this directory named <code>files/user-data.yaml</code> with the contents of the below,
 editing for your specific network and also <strong>make sure your update the section
 for SSH <code>authorized_keys</code> with your SSH public key</strong>:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -201,51 +196,51 @@ for SSH <code>authorized_keys</code> with your SSH public key</strong>:</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#75715e">#cloud-config</span>
 
-<span style="display:block;width:100%;background-color:#3c3d38">    hostname: pi1
-</span>    apt_preserve_sources_list: <span style="color:#66d9ef">true</span>
-    manage_etc_hosts: <span style="color:#66d9ef">true</span>
+<span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#66d9ef">hostname</span>: pi1
+</span>    <span style="color:#66d9ef">apt_preserve_sources_list</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">manage_etc_hosts</span>: <span style="color:#66d9ef">true</span>
 
-    resize_rootfs: <span style="color:#66d9ef">true</span>
-    growpart:
-        mode: auto
-        devices: [<span style="color:#e6db74">&#34;/&#34;</span>]
-        ignore_growroot_disabled: <span style="color:#66d9ef">false</span>
+    <span style="color:#66d9ef">resize_rootfs</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">growpart</span>:
+        <span style="color:#66d9ef">mode</span>: auto
+        <span style="color:#66d9ef">devices</span>: [<span style="color:#e6db74">&#34;/&#34;</span>]
+        <span style="color:#66d9ef">ignore_growroot_disabled</span>: <span style="color:#66d9ef">false</span>
 
-    locale: <span style="color:#e6db74">&#34;en_US.UTF-8&#34;</span>
-    timezone: <span style="color:#e6db74">&#34;America/Los_Angeles&#34;</span>
+    <span style="color:#66d9ef">locale</span>: <span style="color:#e6db74">&#34;en_US.UTF-8&#34;</span>
+    <span style="color:#66d9ef">timezone</span>: <span style="color:#e6db74">&#34;America/Los_Angeles&#34;</span>
 
-    package_update: <span style="color:#66d9ef">true</span>
-    package_upgrade: <span style="color:#66d9ef">true</span>
-    package_reboot_if_required: <span style="color:#66d9ef">true</span>
-    packages:
+    <span style="color:#66d9ef">package_update</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">package_upgrade</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">package_reboot_if_required</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#66d9ef">packages</span>:
       - ntp
 
-    users:
-<span style="display:block;width:100%;background-color:#3c3d38">      - name: pi
-</span>        primary-group: users
-        shell: /bin/bash
-        sudo: ALL=(ALL) NOPASSWD:ALL
-        groups: users,docker,adm,dialout,audio,plugdev,netdev,video
-        ssh-import-id: None
-        lock_passwd: <span style="color:#66d9ef">true</span>
-        ssh-authorized-keys:
+    <span style="color:#66d9ef">users</span>:
+<span style="display:block;width:100%;background-color:#3c3d38">      - <span style="color:#66d9ef">name</span>: pi
+</span>        <span style="color:#66d9ef">primary-group</span>: users
+        <span style="color:#66d9ef">shell</span>: /bin/bash
+        <span style="color:#66d9ef">sudo</span>: ALL=(ALL) NOPASSWD:ALL
+        <span style="color:#66d9ef">groups</span>: users,docker,adm,dialout,audio,plugdev,netdev,video
+        <span style="color:#66d9ef">ssh-import-id</span>: None
+        <span style="color:#66d9ef">lock_passwd</span>: <span style="color:#66d9ef">true</span>
+        <span style="color:#66d9ef">ssh-authorized-keys</span>:
 <span style="display:block;width:100%;background-color:#3c3d38">          - ssh-rsa AAAA_SSH_PUBLIC_KEY_NNNN
 </span>
-    write_files:
-      - content: <span style="color:#e6db74">|
+    <span style="color:#66d9ef">write_files</span>:
+      - <span style="color:#66d9ef">content</span>: <span style="color:#e6db74">|
 </span><span style="color:#e6db74">          allow-hotplug wlan0</span>
           iface wlan0 inet static
-<span style="display:block;width:100%;background-color:#3c3d38">            address <span style="color:#ae81ff">192.168</span>.<span style="color:#ae81ff">1.101</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">            netmask <span style="color:#ae81ff">255.255</span>.<span style="color:#ae81ff">255.0</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">            gateway <span style="color:#ae81ff">192.168</span>.<span style="color:#ae81ff">1.1</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">            dns-nameservers <span style="color:#ae81ff">8.8</span>.<span style="color:#ae81ff">8.8</span> <span style="color:#ae81ff">8.8</span>.<span style="color:#ae81ff">4.4</span>
+<span style="display:block;width:100%;background-color:#3c3d38">            address <span style="color:#ae81ff">192.168.1.101</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">            netmask <span style="color:#ae81ff">255.255.255.0</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">            gateway <span style="color:#ae81ff">192.168.1.1</span>
+</span><span style="display:block;width:100%;background-color:#3c3d38">            dns-nameservers <span style="color:#ae81ff">8.8.8.8</span> <span style="color:#ae81ff">8.8.4.4</span>
 </span>          wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
           iface default inet static
-        path: /etc/network/interfaces.d/wlan0
-      - content: <span style="color:#e6db74">|
+        <span style="color:#66d9ef">path</span>: /etc/network/interfaces.d/wlan0
+      - <span style="color:#66d9ef">content</span>: <span style="color:#e6db74">|
 </span><span style="color:#e6db74">          country=de</span>
           ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
           update_config=<span style="color:#ae81ff">1</span>
@@ -257,20 +252,20 @@ for SSH <code>authorized_keys</code> with your SSH public key</strong>:</p>
             pairwise=CCMP
             auth_alg=OPEN
           }
-        path: /etc/wpa_supplicant/wpa_supplicant.conf
+        <span style="color:#66d9ef">path</span>: /etc/wpa_supplicant/wpa_supplicant.conf
 
-    runcmd:
+    <span style="color:#66d9ef">runcmd</span>:
       - [ systemctl, restart, avahi-daemon ]
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Open the file <code>files/config.txt</code> if you have any boot options you would like
+</div>
+</li>
+<li>
+<p>Open the file <code>files/config.txt</code> if you have any boot options you would like
 to specify:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -278,7 +273,7 @@ to specify:</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    disable_camera_led<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
     dtparam<span style="color:#f92672">=</span>audio<span style="color:#f92672">=</span>on
     enable_uart<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
@@ -287,21 +282,21 @@ to specify:</p>
     start_x<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Install the <a href="https://github.com/hypriot/flash/releases">flash utility for Hypriot</a>
+</div>
+</li>
+<li>
+<p>Install the <a href="https://github.com/hypriot/flash/releases">flash utility for Hypriot</a>
 changing the version to the latest (as of writing this is <code>2.3.0</code>):</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    brew install pv
     brew install awscli
 <span style="display:block;width:100%;background-color:#3c3d38">    curl -LO https://github.com/hypriot/flash/releases/download/2.3.0/flash
@@ -309,25 +304,27 @@ changing the version to the latest (as of writing this is <code>2.3.0</code>):</
     sudo mv flash /usr/local/bin/flash
     </code></pre></td></tr></table>
 </div>
-</div></li>
+</div>
+</li>
 </ol>
-
 <h3 id="flash-the-sd-cards-for-each-raspberry-pi">Flash the SD cards for each Raspberry Pi</h3>
-
 <ol>
-<li><p>Insert an SD card ready for formatting</p></li>
-
-<li><p>On mac run <code>diskutil list</code> to find the SD card as a disk</p></li>
-
-<li><p>Update the <code>files/user-data.yaml</code> file created earlier with the different information
-for each machine (e.g. IP address, hostname, username, etc.)</p></li>
-
-<li><p>Run, <strong>changing the hostname each time</strong>, and when prompted make sure the disk
+<li>
+<p>Insert an SD card ready for formatting</p>
+</li>
+<li>
+<p>On mac run <code>diskutil list</code> to find the SD card as a disk</p>
+</li>
+<li>
+<p>Update the <code>files/user-data.yaml</code> file created earlier with the different information
+for each machine (e.g. IP address, hostname, username, etc.)</p>
+</li>
+<li>
+<p>Run, <strong>changing the hostname each time</strong>, and when prompted make sure the disk
 the utility finds is the SD card present in <code>diskutil list</code>:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -337,7 +334,7 @@ the utility finds is the SD card present in <code>diskutil list</code>:</p>
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">        flash <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>          --bootconf files/config.txt <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>          --config files/wifi-device-init.yml <span style="color:#ae81ff">\
@@ -348,21 +345,20 @@ the utility finds is the SD card present in <code>diskutil list</code>:</p>
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>          hypriotos-rpi-v1.10.0.img
 </span>    </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Insert the flashed Hypriot SD card into the Raspberry Pi and power it on.
+</div>
+</li>
+<li>
+<p>Insert the flashed Hypriot SD card into the Raspberry Pi and power it on.
 Power the machine all the way on for about 2 full minutes. <strong>Power back off.</strong>
 And then <strong>power back on.</strong> This is necessary because the first boot boots some
 initial <code>cloud-init</code> in place. On the second boot it is used this time in
 configuration of the machine.</p>
-
 <p>You should be able to watch the machine show up in your attached devices on
 your router. Ensure that it has the static IP address you have set in
 <code>files/user-data.yaml</code>. If you see the machine come online as a dynamic IP
 address you did not expect you will need to attach the Raspberry Pi to
 Ethernet and perform some modifications of these files (beyond the scope of
 this writing - please use the comments below to discuss):</p>
-
 <ul>
 <li><code>/etc/hostname</code></li>
 <li><code>/etc/hosts</code></li>
@@ -370,61 +366,61 @@ this writing - please use the comments below to discuss):</p>
 <li><code>/etc/ssh/sshd_config</code></li>
 <li><code>/etc/wpa_supplicant/wpa_supplicant.conf</code></li>
 <li><code>/home/pi/.ssh/authorized_keys</code></li>
-</ul></li>
+</ul>
+</li>
 </ol>
-
 <h3 id="setting-up-the-cluster">Setting up the cluster</h3>
-
 <ol>
-<li><p><strong>ON ALL NODES</strong> SSH to the machine you have just setup in <code>files/user-data.yaml</code>:</p>
-
+<li>
+<p><strong>ON ALL NODES</strong> SSH to the machine you have just setup in <code>files/user-data.yaml</code>:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">    ssh -i ~/.ssh/YOUR_PRIVATE_KEY_FILENAME_HERE pi@pi1.local
 </span>    </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p><strong>ON ALL NODES</strong> Become root:</p>
-
+</div>
+</li>
+<li>
+<p><strong>ON ALL NODES</strong> Become root:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo su -
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p><strong>ON ALL NODES</strong> Install kubernetes repository and kubernetes itself:</p>
-
+</div>
+</li>
+<li>
+<p><strong>ON ALL NODES</strong> Install kubernetes repository and kubernetes itself:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
     echo <span style="color:#e6db74">&#34;deb http://apt.kubernetes.io/ kubernetes-xenial main&#34;</span> <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        &gt; /etc/apt/sources.list.d/kubernetes.list
     apt-get update <span style="color:#f92672">&amp;&amp;</span> apt-get install -y kubeadm
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> Run the following command:
+</div>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> Run the following command:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -444,7 +440,7 @@ this writing - please use the comments below to discuss):</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    cat &gt; /etc/docker/daemon.json <span style="color:#e6db74">&lt;&lt;EOF
 </span><span style="color:#e6db74">    {
 </span><span style="color:#e6db74">    &#34;exec-opts&#34;: [&#34;native.cgroupdriver=cgroupfs&#34;],
@@ -465,165 +461,159 @@ this writing - please use the comments below to discuss):</p>
     systemctl restart docker
     </code></pre></td></tr></table>
 </div>
-</div></p></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run (substituting the IP address
+</div></p>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> You will want to run (substituting the IP address
 for the IP address of your <em>master</em> node):</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm config images pull -v3
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Now initialize the kubernetes cluster:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm init --token-ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
     </code></pre></td></tr></table>
 </div>
 </div></p>
-
 <p>If you chose to use Flannel you will run:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm init --pod-network-cidr <span style="color:#ae81ff">10</span>.244.0.0/16 <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>        --apiserver-advertise-address<span style="color:#f92672">=</span><span style="color:#ae81ff">192</span>.168.1.101 <span style="color:#ae81ff">\
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm init --pod-network-cidr 10.244.0.0/16 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>        --apiserver-advertise-address<span style="color:#f92672">=</span>192.168.1.101 <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        --token-ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
     </code></pre></td></tr></table>
 </div>
 </div></p>
-
 <p><strong>NOTE DOWN THE LAST LINE OF OUTPUT FROM ABOVE</strong> It should look like the
 following:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm join <span style="color:#ae81ff">192</span>.168.1.101:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm join 192.168.1.101:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    --discovery-token-ca-cert-hash sha256:dbcc7dfe885966a10483acde9dc536cb1215acd16a9b12fe04847efcaaba448
     </code></pre></td></tr></table>
 </div>
 </div></p>
-
 <p>If this fails then try a <code>kubectl reset</code> and then run the <code>init</code> again:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo sed -i <span style="color:#e6db74">&#39;s/failureThreshold: 8/failureThreshold: 20/g&#39;</span> /etc/kubernetes/manifests/kube-apiserver.yaml <span style="color:#f92672">&amp;&amp;</span> <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    sudo sed -i <span style="color:#e6db74">&#39;s/initialDelaySeconds: [0-9]\+/initialDelaySeconds: 360/&#39;</span> /etc/kubernetes/manifests/kube-apiserver.yaml
     </code></pre></td></tr></table>
 </div>
-</div></p></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run this to capture the
+</div></p>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> You will want to run this to capture the
 kubernetes configuration:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    mkdir -p $HOME/.kube
     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
     sudo chown <span style="color:#66d9ef">$(</span>id -u<span style="color:#66d9ef">)</span>:<span style="color:#66d9ef">$(</span>id -g<span style="color:#66d9ef">)</span> $HOME/.kube/config
     export KUBECONFIG<span style="color:#f92672">=</span>/etc/kubernetes/kubelet.conf
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> You will want to run the following:</p>
-
+</div>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> You will want to run the following:</p>
 <p>To use Weave run:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/alternative/kubernetes-dashboard-arm-head.yaml
     </code></pre></td></tr></table>
 </div>
 </div></p>
-
 <p>Alternatively you can try with Flannel:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
     </code></pre></td></tr></table>
 </div>
-</div></p></li>
-
-<li><p><strong>ON ALL NODES BUT THE MASTER NODE</strong> You will want to run this (substituting
+</div></p>
+</li>
+<li>
+<p><strong>ON ALL NODES BUT THE MASTER NODE</strong> You will want to run this (substituting
 this for the line output from <em>Step 7</em> above):</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm join <span style="color:#ae81ff">192</span>.168.1.101:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm join 192.168.1.101:6443 --token 88duzufy.iic6qylefezykvmuwu <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    --discovery-token-ca-cert-hash sha256:dbcc7dfe885966a10483acde9dc536cb1215acd16a9b12fe04847efcaaba448
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> Wait for 2 minutes and then run:</p>
-
+</div>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> Wait for 2 minutes and then run:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl get nodes
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <ul>
 <li>You should see output like the following:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    NAME   STATUS     ROLES    AGE   VERSION
     pi1    NotReady   master   20h   v1.13.4
     pi2    NotReady   &lt;none&gt;   19h   v1.13.4
@@ -631,26 +621,24 @@ this for the line output from <em>Step 7</em> above):</p>
     </code></pre></td></tr></table>
 </div>
 </div></li>
-</ul></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> Run the following command:</p>
-
+</ul>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> Run the following command:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl get pods --namespace<span style="color:#f92672">=</span>kube-system
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <p>To see if you get the expected output:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -665,133 +653,126 @@ this for the line output from <em>Step 7</em> above):</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    NAME                          READY   STATUS    RESTARTS   AGE
-    coredns-fb8b8dccf-hsbs2       <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          22m
-    coredns-fb8b8dccf-j8r5z       <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          22m
-    etcd-pi1                      <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21m
-    kube-apiserver-pi1            <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21m
-    kube-controller-manager-pi1   <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21m
-    kube-proxy-5x27c              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          19m
-    kube-proxy-lrbd9              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          22m
-    kube-proxy-nx2gm              <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          19m
-    kube-scheduler-pi1            <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          21m
-    weave-net-5bwvt               <span style="color:#ae81ff">2</span>/2     Running   <span style="color:#ae81ff">0</span>          18m
-    weave-net-dp6z8               <span style="color:#ae81ff">2</span>/2     Running   <span style="color:#ae81ff">0</span>          18m
-    weave-net-nkrkq               <span style="color:#ae81ff">2</span>/2     Running   <span style="color:#ae81ff">0</span>          18m
+    coredns-fb8b8dccf-hsbs2       1/1     Running   <span style="color:#ae81ff">0</span>          22m
+    coredns-fb8b8dccf-j8r5z       1/1     Running   <span style="color:#ae81ff">0</span>          22m
+    etcd-pi1                      1/1     Running   <span style="color:#ae81ff">0</span>          21m
+    kube-apiserver-pi1            1/1     Running   <span style="color:#ae81ff">0</span>          21m
+    kube-controller-manager-pi1   1/1     Running   <span style="color:#ae81ff">0</span>          21m
+    kube-proxy-5x27c              1/1     Running   <span style="color:#ae81ff">0</span>          19m
+    kube-proxy-lrbd9              1/1     Running   <span style="color:#ae81ff">0</span>          22m
+    kube-proxy-nx2gm              1/1     Running   <span style="color:#ae81ff">0</span>          19m
+    kube-scheduler-pi1            1/1     Running   <span style="color:#ae81ff">0</span>          21m
+    weave-net-5bwvt               2/2     Running   <span style="color:#ae81ff">0</span>          18m
+    weave-net-dp6z8               2/2     Running   <span style="color:#ae81ff">0</span>          18m
+    weave-net-nkrkq               2/2     Running   <span style="color:#ae81ff">0</span>          18m
     </code></pre></td></tr></table>
 </div>
-</div></li>
+</div>
+</li>
 </ol>
-
 <h2 id="testing-the-cluster-works">Testing the cluster works</h2>
-
 <p>In order to test that all the services and setup are running as we expect we run
 a few commands further with validation.</p>
-
 <ol>
-<li><p><strong>ONLY ON THE MASTER NODE</strong> Run the following as the user <code>pi</code>:</p>
-
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> Run the following as the user <code>pi</code>:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl get nodes
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Given enough time you should see output like the following:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    NAME   STATUS   ROLES    AGE   VERSION
     pi1    Ready    master   10h   v1.14.0
     pi2    Ready    &lt;none&gt;   22m   v1.14.0
     pi3    Ready    &lt;none&gt;   22m   v1.14.0
     </code></pre></td></tr></table>
 </div>
-</div></p></li>
-
-<li><p>SCP the files <code>files/function.yml</code> to the master node:</p>
-
+</div></p>
+</li>
+<li>
+<p>SCP the files <code>files/function.yml</code> to the master node:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    scp files/function.yml pi@pi1.local:~/
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> Run the following command as the user <code>pi</code>:</p>
-
+</div>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> Run the following command as the user <code>pi</code>:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl create -f <span style="color:#66d9ef">function</span>.yml
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <p>And then run the following test:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    curl -4 http://127.0.0.1:31118 -d <span style="color:#e6db74">&#34;# test&#34;</span>
     </code></pre></td></tr></table>
 </div>
 </div></p>
-
 <p>You should see the following output:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    &lt;h1&gt;test&lt;/h1&gt;
     </code></pre></td></tr></table>
 </div>
 </div></p>
-
 <p>Finally cleanup the test:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl delete -f <span style="color:#66d9ef">function</span>.yml
     </code></pre></td></tr></table>
 </div>
-</div></p></li>
+</div></p>
+</li>
 </ol>
-
 <h2 id="reset-back-to-initial-status">Reset back to initial status</h2>
-
 <ol>
-<li><p><strong>ON ALL NODES</strong> Run the following suite of commands as <code>root</code>:</p>
-
+<li>
+<p><strong>ON ALL NODES</strong> Run the following suite of commands as <code>root</code>:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -800,7 +781,7 @@ a few commands further with validation.</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo kubeadm reset
     systemctl stop kubelet &amp; systemctl stop docker
     rm -rf /var/lib/cni/
@@ -811,102 +792,99 @@ a few commands further with validation.</p>
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <p>If you installed Flannel:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    ifconfig flannel.1 down &amp; ip link delete flannel.1
     </code></pre></td></tr></table>
 </div>
-</div></p></li>
+</div></p>
+</li>
 </ol>
-
 <p>At this point you are done setting up Kubernetes. However, if you want to
 further setup OpenFaaS, I have outlined those steps below.</p>
-
 <h2 id="setup-openfaas">Setup OpenFaaS</h2>
-
 <p>Now we can setup our OpenFaas service:</p>
-
 <ol>
-<li><p><strong>ONLY ON THE MASTER NODE</strong> Setup Weave networking by running:
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> Setup Weave networking by running:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl apply -f <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span> <span style="color:#e6db74">&#34;https://cloud.weave.works/k8s/net?k8s-version=</span><span style="color:#66d9ef">$(</span>kubectl version | base64 | tr -d <span style="color:#e6db74">&#39;\n&#39;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
     </code></pre></td></tr></table>
 </div>
-</div></p></li>
-
-<li><p><strong>ON ALL NODES</strong> Now update the firewall rules:</p>
-
+</div></p>
+</li>
+<li>
+<p><strong>ON ALL NODES</strong> Now update the firewall rules:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    sudo sysctl net.bridge.bridge-nf-call-iptables<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> Clone the OpenFaaS repository:
+</div>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> Clone the OpenFaaS repository:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    git clone https://github.com/openfaas/faas-netes
     cd faas-netes
     </code></pre></td></tr></table>
 </div>
-</div></p></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> Run the OpenFaaS service:</p>
-
+</div></p>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> Run the OpenFaaS service:</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl apply -f ./namespaces.yml
     kubectl apply -f ./yaml_armhf
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p><strong>ONLY ON THE MASTER NODE</strong> Check to see that the service is running and
+</div>
+</li>
+<li>
+<p><strong>ONLY ON THE MASTER NODE</strong> Check to see that the service is running and
 ready:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    kubectl get pods --all-namespaces
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <p>You should some output like this:
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -926,40 +904,41 @@ ready:</p>
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    NAMESPACE     NAME                           READY   STATUS    RESTARTS   AGE
-    kube-system   coredns-fb8b8dccf-hsbs2        <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          28m
-    kube-system   coredns-fb8b8dccf-j8r5z        <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          28m
-    kube-system   etcd-pi1                       <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          28m
-    kube-system   kube-apiserver-pi1             <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          28m
-    kube-system   kube-controller-manager-pi1    <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          28m
-    kube-system   kube-proxy-5x27c               <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          26m
-    kube-system   kube-proxy-lrbd9               <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          28m
-    kube-system   kube-proxy-nx2gm               <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          26m
-    kube-system   kube-scheduler-pi1             <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          28m
-    kube-system   weave-net-5bwvt                <span style="color:#ae81ff">2</span>/2     Running   <span style="color:#ae81ff">0</span>          25m
-    kube-system   weave-net-dp6z8                <span style="color:#ae81ff">2</span>/2     Running   <span style="color:#ae81ff">0</span>          25m
-    kube-system   weave-net-nkrkq                <span style="color:#ae81ff">2</span>/2     Running   <span style="color:#ae81ff">0</span>          25m
-<span style="display:block;width:100%;background-color:#3c3d38">    openfaas      alertmanager-96d4c9b7f-f2gpd   <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          19m
-</span><span style="display:block;width:100%;background-color:#3c3d38">    openfaas      gateway-54878fcb85-gp7wn       <span style="color:#ae81ff">2</span>/2     Running   <span style="color:#ae81ff">1</span>          19m
-</span><span style="display:block;width:100%;background-color:#3c3d38">    openfaas      nats-784c98db98-pp78z          <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          19m
-</span><span style="display:block;width:100%;background-color:#3c3d38">    openfaas      prometheus-6b7b994d9d-bj46g    <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">0</span>          19m
-</span><span style="display:block;width:100%;background-color:#3c3d38">    openfaas      queue-worker-c5776978d-gghpg   <span style="color:#ae81ff">1</span>/1     Running   <span style="color:#ae81ff">1</span>          19m
+    kube-system   coredns-fb8b8dccf-hsbs2        1/1     Running   <span style="color:#ae81ff">0</span>          28m
+    kube-system   coredns-fb8b8dccf-j8r5z        1/1     Running   <span style="color:#ae81ff">0</span>          28m
+    kube-system   etcd-pi1                       1/1     Running   <span style="color:#ae81ff">0</span>          28m
+    kube-system   kube-apiserver-pi1             1/1     Running   <span style="color:#ae81ff">0</span>          28m
+    kube-system   kube-controller-manager-pi1    1/1     Running   <span style="color:#ae81ff">0</span>          28m
+    kube-system   kube-proxy-5x27c               1/1     Running   <span style="color:#ae81ff">0</span>          26m
+    kube-system   kube-proxy-lrbd9               1/1     Running   <span style="color:#ae81ff">0</span>          28m
+    kube-system   kube-proxy-nx2gm               1/1     Running   <span style="color:#ae81ff">0</span>          26m
+    kube-system   kube-scheduler-pi1             1/1     Running   <span style="color:#ae81ff">0</span>          28m
+    kube-system   weave-net-5bwvt                2/2     Running   <span style="color:#ae81ff">0</span>          25m
+    kube-system   weave-net-dp6z8                2/2     Running   <span style="color:#ae81ff">0</span>          25m
+    kube-system   weave-net-nkrkq                2/2     Running   <span style="color:#ae81ff">0</span>          25m
+<span style="display:block;width:100%;background-color:#3c3d38">    openfaas      alertmanager-96d4c9b7f-f2gpd   1/1     Running   <span style="color:#ae81ff">0</span>          19m
+</span><span style="display:block;width:100%;background-color:#3c3d38">    openfaas      gateway-54878fcb85-gp7wn       2/2     Running   <span style="color:#ae81ff">1</span>          19m
+</span><span style="display:block;width:100%;background-color:#3c3d38">    openfaas      nats-784c98db98-pp78z          1/1     Running   <span style="color:#ae81ff">0</span>          19m
+</span><span style="display:block;width:100%;background-color:#3c3d38">    openfaas      prometheus-6b7b994d9d-bj46g    1/1     Running   <span style="color:#ae81ff">0</span>          19m
+</span><span style="display:block;width:100%;background-color:#3c3d38">    openfaas      queue-worker-c5776978d-gghpg   1/1     Running   <span style="color:#ae81ff">1</span>          19m
 </span>    </code></pre></td></tr></table>
 </div>
-</div></p></li>
-
-<li><p>Now open a new tab in your browser and navigate to: <a href="http://192.168.1.101:31112/">http://192.168.1.101:31112/</a>.</p></li>
-
-<li><p>If you are performing remotely outside of the local network, like I am, and
+</div></p>
+</li>
+<li>
+<p>Now open a new tab in your browser and navigate to: http://192.168.1.101:31112/.</p>
+</li>
+<li>
+<p>If you are performing remotely outside of the local network, like I am, and
 you have a machine in front of your home network that has SSH enabled on port
 2222 (by editing your <code>/etc/ssh/sshd_config</code> and rebooting) you can try the
 following to open up an SSH tunnel and use your browser remotely to access the
 OpenFaaS portal:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -967,16 +946,17 @@ OpenFaaS portal:</p>
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    ssh <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>        -L <span style="color:#ae81ff">31112</span>:127.0.0.1:31112 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>        -L 31112:127.0.0.1:31112 <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        -A <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        -J <span style="color:#ae81ff">\
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>        YOUR_USERANME@YOUR_DYNAMIC_DNS_IP:2222 <span style="color:#ae81ff">\
 </span></span><span style="color:#ae81ff"></span>        pi@pi1.local
     </code></pre></td></tr></table>
 </div>
-</div></li>
+</div>
+</li>
 </ol>
 
     </div>

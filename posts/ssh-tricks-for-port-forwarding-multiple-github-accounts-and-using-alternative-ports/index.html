@@ -3,7 +3,7 @@
   <head>
     <title>SSH tricks for port forwarding, multiple GitHub accounts, and  using alternative ports // John Wyles dot github dot io</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.55.5" />
+    <meta name="generator" content="Hugo 0.71.0" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="John Doe" />
     <meta name="description" content="" />
@@ -56,7 +56,6 @@ would like to access from nearly anywhere in the world. I am currently using an
 OpenVPN server running on my router with a
 <a href="https://freedns.afraid.org/">FreeDNS afraid.org</a> dynamic DNS entry that is
 perpetually updated with a crontab.</p>
-
 <p>As an aside to the main focus of this article I will describe what I found while
 setting up <a href="https://freedns.afraid.org/">FreeDNS afraid.org</a> up front in case
 you would like to do it.  I found that I didn&rsquo;t need any special daemon running
@@ -65,16 +64,14 @@ backend endpoint to hit which will update my DNS entries for me. In order to do
 this I found that it was as simple as opening the crontab for my current user
 with <code>crontab -e</code> and simply adding an entry pulled from
 <a href="https://freedns.afraid.org/dynamic/">the bottom of the Dynamic DNS page under each subdomains &ldquo;quick cron example&rdquo;</a>.  For me this looks like:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#ae81ff">2</span>,7,12,17,22,27,32,37,42,47,52,57 * * * * sleep <span style="color:#ae81ff">55</span> ; wget --no-check-certificate -O - https://freedns.afraid.org/dynamic/update.php?AAAA...NNNN<span style="color:#f92672">=</span> &gt;&gt; /tmp/freedns_@_johnwyles_com.log <span style="color:#ae81ff">2</span>&gt;&amp;<span style="color:#ae81ff">1</span> &amp;</code></pre></td></tr></table>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">2,7,12,17,22,27,32,37,42,47,52,57 * * * * sleep <span style="color:#ae81ff">55</span> ; wget --no-check-certificate -O - https://freedns.afraid.org/dynamic/update.php?AAAA...NNNN<span style="color:#f92672">=</span> &gt;&gt; /tmp/freedns_@_johnwyles_com.log 2&gt;&amp;<span style="color:#ae81ff">1</span> &amp;</code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Regardless of if you are running an OpenVPN server or not you will likely want a
 fallback way to SSH to a machine in your home network or jump from a machine in
 your network to others.  With DNS taken care above you can now use setup this
@@ -90,39 +87,35 @@ the door-knocking brute force software hackers simply defaults to <code>22</code
 not bother testing other ports (it simply takes too much time to find hosts
 running SSH on a non-<code>22</code> port). I use <code>2222</code> ).  Once you have done this you
 will need to reload the <code>ssh</code> service with <code>sudo service ssh restart</code>.</p>
-
 <p>Now, in order to access your host from outside your home network remotely, you
 can use <code>ssh -i ~/.ssh/YOUR_IDENTITY_FILE.rsa -P YOUR_PORT YOUR_USERNAME@YOUR_DYNAMICDNS_HOSTNAME</code>.
 For me this looks like:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span></span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">ssh -i ~/.ssh/johnwyles.rsa <span style="color:#ae81ff">\
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    -P <span style="color:#ae81ff">2222</span> <span style="color:#ae81ff">\
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    johnwyles@johnwyles.com</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>If, instead of accessing this machine in your network directly, you would like
 to &ldquo;jump&rdquo; from it (in this case the host would be known as a <em>bastian host</em>) to
 another machine from within the network you can use  <code>ssh -A -J -i ~/.ssh/YOUR_IDENTITY_FILE.rsa -P 2222 YOUR_USERNAME@YOUR_DYNAMICDNS_HOSTNAME YOUR_USERNAME@YOUR_LOCAL_NETWORK_HOSTNAME</code>.
 For me this looks like:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">ssh -i ~/.ssh/johnwyles.rsa <span style="color:#ae81ff">\
 </span></span><span style="color:#ae81ff"></span>    -A <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    -J <span style="color:#ae81ff">\
@@ -131,7 +124,6 @@ For me this looks like:</p>
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    pi@pi1.local</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>If, instead of simply SSH-ing to the local machine in your network via the
 bastion host, you would like to port forward a port from a local machine in your
 network through the bastion host you can use <code>ssh -A -J -i ~/.ssh/YOUR_IDENTITY_FILE.rsa -L LOCAL_PORT@YOUR_LOCAL_NETWORK_HOSTNAME:REMOTE_PORT -P 2222 YOUR_USERNAME@YOUR_DYNAMICDNS_HOSTNAME</code>.
@@ -139,10 +131,9 @@ For me, with a service running on port <code>80</code> of one machine, a local p
 machine I am SSH-ing from (e.g. my laptop) of <code>8080</code>, another service on another
 machine on <code>443</code>, and a local port on the machine I am SSH-ing from of <code>8443</code>,
 this would look like:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -150,25 +141,23 @@ this would look like:</p>
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="display:block;width:100%;background-color:#3c3d38">ssh -i ~/.ssh/johnwyles.rsa <span style="color:#ae81ff">\
 </span></span><span style="color:#ae81ff"></span>    -A <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    -J <span style="color:#ae81ff">\
-</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    -L <span style="color:#ae81ff">8080</span>:pi@octopi.local:80 <span style="color:#ae81ff">\
-</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    -L <span style="color:#ae81ff">8443</span>:pi@pi1.local:443 <span style="color:#ae81ff">\
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    -L 8080:pi@octopi.local:80 <span style="color:#ae81ff">\
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    -L 8443:pi@pi1.local:443 <span style="color:#ae81ff">\
 </span></span><span style="color:#ae81ff"></span>    -P <span style="color:#ae81ff">2222</span> <span style="color:#ae81ff">\
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff"></span>    johnwyles@johnwyles.com</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>If you do not want to have to type all of these things out on the command line
 each time and you would like to capture it once, set-it-and-forget-it, you can
 add all of the above to your <code>~/.ssh/config</code> file in different permutations.
 For me this looks like:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -200,7 +189,7 @@ For me this looks like:</p>
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
 </span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
 </span></span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Simply how we access johnwyles.com on port 2222</span>
 <span style="display:block;width:100%;background-color:#3c3d38">Host johnwyles.com
 </span><span style="display:block;width:100%;background-color:#3c3d38">  User johnwyles
@@ -234,13 +223,11 @@ For me this looks like:</p>
 </span><span style="display:block;width:100%;background-color:#3c3d38">    User johnwyles</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>With the SSH configuration file in place you can now just simply run something
 like <code>ssh johnwyles.com-octopi</code> to SSH <em>through</em> <code>johnwyles.com</code> on port <code>2222</code>
 to <code>octopi.local</code>. Similarly if I would like to setup some SSH tunneling of
 services within my home network through the bastion host all I would need to run
 is <code>ssh johnwyles.com-port-forwarding</code>.</p>
-
 <p>Now, with all of that said and some of that understanding, if you are also like
 me you have separate work and personal accounts for GitHub which you may
 (hopefully seldom) require to use on the same machine. Since you do not want to
@@ -248,14 +235,12 @@ mix your work and personal GitHub accounts in the git log history written with
 the wrong identity (if you have see <a href="https://stackoverflow.com/questions/750172/how-to-change-the-author-and-committer-name-and-e-mail-of-multiple-commits-in-gi">this Stack Overflow entry on how to
 back-out those changes in git history</a>
 you will need to let both SSH and git know about each.</p>
-
 <p>For me this involves two separate GitHub <em>identities</em> each with their own GitHub
 account and respective SSH private key.  I specify each of these in the
 <code>~/.ssh/config</code> file as well like this:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -267,7 +252,7 @@ account and respective SSH private key.  I specify each of these in the
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># GitHub identity for personal</span>
 <span style="display:block;width:100%;background-color:#3c3d38">Host github.com-johnwyles
 </span>    HostName github.com
@@ -281,15 +266,13 @@ account and respective SSH private key.  I specify each of these in the
 </span>    User git</code></pre></td></tr></table>
 </div>
 </div>
-
 <p>Then in each respective git checkout for a particular repository or project I
 have edited the <code>.git/config</code> file and updated it like the following (<strong>note:</strong>
 the <code>github.com</code> is suffixed with <code>-johnwyles</code> as we specified in the
 <code>~/.ssh/config</code> file above):</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -312,7 +295,7 @@ the <code>github.com</code> is suffixed with <code>-johnwyles</code> as we speci
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
 </span></span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">[core]
      repositoryformatversion = <span style="color:#ae81ff">0</span>
      filemode = <span style="color:#66d9ef">true</span>
@@ -337,7 +320,6 @@ the <code>github.com</code> is suffixed with <code>-johnwyles</code> as we speci
 <span style="display:block;width:100%;background-color:#3c3d38">	name = John Wyles</span></code></pre></td></tr></table>
 </div>
 </div>
-
 <p>That should take you pretty far! Good luck!</p>
 
     </div>

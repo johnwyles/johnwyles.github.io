@@ -3,7 +3,7 @@
   <head>
     <title>Flashing the Creality Ender 3 with a Raspberry Pi // John Wyles dot github dot io</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.55.5" />
+    <meta name="generator" content="Hugo 0.71.0" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="John Doe" />
     <meta name="description" content="" />
@@ -51,23 +51,17 @@
         </div></div>
     </header>
     <div class="post-content">
-      
-
-<p>Most of the guides on the internet only had instructions for Arduino which I did
+      <p>Most of the guides on the internet only had instructions for Arduino which I did
 not have lying around. Instead I had a Raspberry Pi and knew it&rsquo;s GPIO pinouts
 could be used but couldn&rsquo;t really find much on until I found: <a href="https://www.fission3d.com/guides/flash-bootloader-and-install-firmware-with-raspberry-pi">Flash Bootloader and Install Firmware With Raspberry PI</a>.
 <strong>PLEASE SEE THIS GUIDE FOR ANY TROUBLESHOOTING</strong>  I have  re-written it to
 succinctly summarize the instructions for flashing the Ender 3 using a
 Raspberry Pi.</p>
-
 <p><strong>NOTE:</strong> This guide was written for macOS so you may have to make some
 substitutions on instructions for your OS.</p>
-
 <h2 id="things-you-will-need">Things you will need</h2>
-
 <ul>
 <li>Raspberry Pi
-
 <ul>
 <li>Should be physically close to the Ender 3</li>
 <li>Should be removed from any case with access to the GPIO pins</li>
@@ -75,51 +69,48 @@ substitutions on instructions for your OS.</p>
 <a href="https://johnwyles.github.io/posts/setting-up-kubernetes-and-openfaas-on-a-raspberry-pi-cluster-using-hypriot/">Setting up Kubernetes and OpenFaaS on a Raspberry Pi cluster using Hypriot</a>
 if you do not already have this leaving off the steps after
 <strong>Setting up the cluster</strong>)</li>
-</ul></li>
+</ul>
+</li>
 <li>Six female-to-female jumper wires (<a href="https://www.amazon.com/Elegoo-EL-CP-004-Multicolored-Breadboard-arduino/dp/B01EV70C78/">Amazon Prime</a>)</li>
 <li>A macOS computer with <a href="https://brew.sh/">homebrew</a> installed</li>
 </ul>
-
 <h2 id="setup">Setup</h2>
-
 <p>Before we get started we need to install a few things on both your machine and
 the Raspberry Pi.</p>
-
 <h3 id="on-your-machine">On your machine</h3>
-
 <ul>
-<li><p>Install Arduino IDE</p>
-
+<li>
+<p>Install Arduino IDE</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">brew cask install --appdir<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/Applications&#34;</span> arduino
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Download the TH3D firmware</p>
-
+</div>
+</li>
+<li>
+<p>Download the TH3D firmware</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd ~/Desktop
 git clone https://github.com/houseofbugs/TH3D-Unified-U1.R2.git
 cd TH3D-Unified-U1.R2/TH3DUF_R2/
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Open the Arduino IDE</p>
-
+</div>
+</li>
+<li>
+<p>Open the Arduino IDE</p>
 <ul>
 <li>Go to <strong>Arduino</strong> &gt; <strong>Preferences</strong> and paste <a href="https://raw.githubusercontent.com/Lauszus/Sanguino/master/package_lauszus_sanguino_index.json">https://raw.githubusercontent.com/Lauszus/Sanguino/master/package_lauszus_sanguino_index.json</a>
 into <strong>Additional Board Manager URLs</strong> and click <strong>OK</strong></li>
@@ -134,43 +125,33 @@ and remove the two leading <code>//</code></li>
 <li>In the same tab file the line <code>#define DISABLE_BOOT</code> and remove the two
 leading <code>//</code></li>
 <li>Go to <strong>Sketch</strong> &gt; <strong>Export compiled Binary</strong></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>You should now see two files: <code>TH3DUF_R2.ino.sanguino.hex</code> and
 <code>TH3DUF_R2.ino.with_bootloader.sanguino.hex</code></p>
-
 <ul>
 <li>Copy the files to the Raspberry Pi machine
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">scp  -i ~/.ssh/YOUR_PRIVATE_KEY.rsa TH3DUF_R2.ino.sanguino.hex TH3DUF_R2.ino.with_bootloader.sanguino.hex pi@YOUR_RASPBERRY_PI_IP:~/
     </code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
-
 <p>Change <code>pi</code> to the Raspberry Pi username and <code>YOUR_RASPBERRY_PI_IP</code> to the IP of
 the Raspberry Pi machine you are using on your home network</p>
-
 <h3 id="connect-the-ender-3-board-and-the-raspberry-pi">Connect the Ender 3 board and the Raspberry Pi</h3>
-
 <p><strong>UNPLUG THE ENDER 3 POWER AND RASPBERRY PI POWER</strong></p>
-
 <p>Here is the Ender 3 Board with the pins you will be connecting labeled:</p>
-
-<p><img src="/images/ender3_board.webp" alt="Ender 3 Board" /></p>
-
+<p><img src="/images/ender3_board.webp" alt="Ender 3 Board"></p>
 <p>And here is the Raspberry Pi 3 board with the pins you will be connecting:</p>
-
-<p><img src="/images/raspberry_pi_3b_board.webp" alt="Raspberry Pi 3b Board" /></p>
-
+<p><img src="/images/raspberry_pi_3b_board.webp" alt="Raspberry Pi 3b Board"></p>
 <p>Given these diagrams you can connect your jumper cables in the following way</p>
-
 <table>
 <thead>
 <tr>
@@ -178,90 +159,83 @@ the Raspberry Pi machine you are using on your home network</p>
 <th align="center"><strong>RaspberryPi</strong></th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>5V</td>
-<td align="center">PIN 1</td>
+<td align="center">PIN 2</td>
 </tr>
-
 <tr>
 <td>MISO</td>
 <td align="center">PIN 12</td>
 </tr>
-
 <tr>
 <td>MOSI</td>
 <td align="center">PIN 16</td>
 </tr>
-
 <tr>
 <td>SCK</td>
 <td align="center">PIN 18</td>
 </tr>
-
 <tr>
 <td>GND</td>
 <td align="center">PIN 6</td>
 </tr>
-
 <tr>
 <td>RESET</td>
 <td align="center">PIN 11</td>
 </tr>
 </tbody>
 </table>
-
 <h3 id="on-the-raspberry-pi">On the Raspberry Pi</h3>
-
 <ul>
-<li><p>Plug back in the Raspberry Pi and wait some time for it to boot</p></li>
-
-<li><p>SSH to the Raspberry Pi emachine on your network which you have just copied the
+<li>
+<p>Plug back in the Raspberry Pi and wait some time for it to boot</p>
+</li>
+<li>
+<p>SSH to the Raspberry Pi emachine on your network which you have just copied the
 <code>.hex</code> files to above in the Arduino IDE section above</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssh -i ~/.ssh/YOUR_PRIVATE_KEY.rsa pi@YOUR_RASPBERRY_PI_IP:~/
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Install the avrdude packages necessary</p>
-
+</div>
+</li>
+<li>
+<p>Install the avrdude packages necessary</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get install avrdude
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Copy the <code>/etc/avrdude.conf</code> to the home directory</p>
-
+</div>
+</li>
+<li>
+<p>Copy the <code>/etc/avrdude.conf</code> to the home directory</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /etc/avrdude.conf ~/
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Find the <code>linuxspi</code> line and change the baud rate to <code>115200</code></p>
-
+</div>
+</li>
+<li>
+<p>Find the <code>linuxspi</code> line and change the baud rate to <code>115200</code></p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -270,22 +244,23 @@ the Raspberry Pi machine you are using on your home network</p>
 </span></span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">programmer
     id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;linuxspi&#34;</span>;
     desc <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Use Linux SPI device in /dev/spidev*&#34;</span>;
     type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;linuxspi&#34;</span>;
-    reset <span style="color:#f92672">=</span> <span style="color:#ae81ff">25</span>;
-<span style="display:block;width:100%;background-color:#3c3d38">    baudrate<span style="color:#f92672">=</span><span style="color:#ae81ff">115200</span>;
+    reset <span style="color:#f92672">=</span> 25;
+<span style="display:block;width:100%;background-color:#3c3d38">    baudrate<span style="color:#f92672">=</span>115200;
 </span>;
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Add the following to the bottom of the file
+</div>
+</li>
+<li>
+<p>Add the following to the bottom of the file
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -297,33 +272,33 @@ the Raspberry Pi machine you are using on your home network</p>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># NOTE: THE LAST COMMA IS *NOT* A TYPO AND REQUIRED</span>
 programmer
     id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;pi_1&#34;</span>;
     desc <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Use the Linux sysfs interface to bitbang GPIO lines&#34;</span>;
     type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;linuxgpio&#34;</span>;
-    reset <span style="color:#f92672">=</span> <span style="color:#ae81ff">17</span>;
-    sck <span style="color:#f92672">=</span> <span style="color:#ae81ff">24</span>;
-    mosi <span style="color:#f92672">=</span> <span style="color:#ae81ff">23</span>;
-    miso <span style="color:#f92672">=</span> <span style="color:#ae81ff">18</span>;
+    reset <span style="color:#f92672">=</span> 17;
+    sck <span style="color:#f92672">=</span> 24;
+    mosi <span style="color:#f92672">=</span> 23;
+    miso <span style="color:#f92672">=</span> 18;
 ;
     </code></pre></td></tr></table>
 </div>
-</div></p></li>
-
-<li><p>Test to see if the board is recognized</p>
-
+</div></p>
+</li>
+<li>
+<p>Test to see if the board is recognized</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo avrdude <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    -p atmega1284p <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    -C ~/avrdude.conf <span style="color:#ae81ff">\
@@ -332,19 +307,17 @@ programmer
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <p>You should see output similar to the following:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">avrdude: AVR device initialized and ready to accept instructions
 Reading | <span style="color:#75715e">################################################## | 100% 0.00s</span>
 avrdude: Device signature <span style="color:#f92672">=</span> 0x1e9705 <span style="color:#f92672">(</span>probably m1284p<span style="color:#f92672">)</span>
@@ -353,15 +326,14 @@ avrdude <span style="color:#66d9ef">done</span>.  Thank you.
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <p>If you do <strong>NOT</strong> see the following <strong>DO NOT PROCEED</strong> and check your PIN
-connections.</p></li>
-
-<li><p><strong>ACTION STEP</strong> Now you can flash the board</p>
-
+connections.</p>
+</li>
+<li>
+<p><strong>ACTION STEP</strong> Now you can flash the board</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
@@ -369,7 +341,7 @@ connections.</p></li>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo avrdude <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    -p atmega1284p <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    -C ~/avrdude.conf <span style="color:#ae81ff">\
@@ -379,12 +351,10 @@ connections.</p></li>
     </code></pre></td></tr></table>
 </div>
 </div>
-
 <p>You should see the following output:</p>
-
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
@@ -419,8 +389,8 @@ connections.</p></li>
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    avrdude: Version <span style="color:#ae81ff">6</span>.3-20171130
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    avrdude: Version 6.3-20171130
 ...
          System wide configuration file is <span style="color:#e6db74">&#34;/home/pi/avrdude.conf&#34;</span>
          User configuration file is <span style="color:#e6db74">&#34;/root/.avrduderc&#34;</span>
@@ -455,35 +425,34 @@ avrdude: <span style="color:#ae81ff">131072</span> bytes of flash verified
 avrdude <span style="color:#66d9ef">done</span>.  Thank you.
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>You should now run the following</p>
-
+</div>
+</li>
+<li>
+<p>You should now run the following</p>
 <div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 <table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
 </span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
 </span></code></pre></td>
-<td style="vertical-align:top;padding:0;margin:0;border:0;">
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo shutdown -h now
     </code></pre></td></tr></table>
 </div>
-</div></li>
-
-<li><p>Wait <strong>one solid minute</strong> and now unplug the micro USB POWER to the
-Raspberry Pi</p></li>
-
-<li><p>Unplug all of the jumper cables from the Raspberry Pi</p></li>
+</div>
+</li>
+<li>
+<p>Wait <strong>one solid minute</strong> and now unplug the micro USB POWER to the
+Raspberry Pi</p>
+</li>
+<li>
+<p>Unplug all of the jumper cables from the Raspberry Pi</p>
+</li>
 </ul>
-
 <p>You are now done flashing the board. You can now plug back in the Ender 3 and
 power it on. You may see a blank screen for a moment and then it should show
 the usual screen you see when there is no print in progress.</p>
-
 <h2 id="extra">Extra</h2>
-
 <p>If you are like me you would like to:</p>
-
 <ul>
 <li>Install a BLTouch</li>
 <li>Install the Microswiss hotend</li>
@@ -491,18 +460,15 @@ the usual screen you see when there is no print in progress.</p>
 <li>Install the <a href="https://www.thingiverse.com/thing:2759439">Petsfang</a> to work with
 the dual blower 5015 fan mod and Microswiss hotend</li>
 </ul>
-
 <p>The trick to both the BLTouch with the Petsfang dual 5015 blowers are some
 modifications to the firmware. The 5015 fans whine and there is a fix in the
 TH3D firmware for this as well as some tuning and enabling of the BLTouch.</p>
-
 <p>Also, my Ender 3 came with pressed fit pulleys, and it wasn&rsquo;t until I discovered
 <a href="https://www.youtube.com/watch?v=IjzrNoFnbcI">this YouTube video</a> that I knew
 I was hitting an obstacle that was not readily mentioned elsewhere. For this I
 had to print out modifications (mentioned and linked by the video) that I could
 then install the stepper motor dampers with the press fit pulleys. This required
 inverting the X-axis motor.</p>
-
 <p>All of my modifications to the TH3D firmware are checked in under my fork of the
 repository and you can view those exact differences in <a href="https://github.com/houseofbugs/TH3D-Unified-U1.R2/compare/master...johnwyles:BLTouch-and-Customizations?expand=1">the diff of my fork branch from the TH3D upstream master</a>.</p>
 
