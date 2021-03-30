@@ -3,7 +3,7 @@
   <head>
     <title>Setting up Kubernetes and OpenFaaS on a Raspberry Pi cluster using Hypriot // John Wyles dot github dot io</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.71.0" />
+    <meta name="generator" content="Hugo 0.82.0" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="John Doe" />
     <meta name="description" content="" />
@@ -56,7 +56,7 @@ as a massive starting point but goes further to show the steps I took in order
 to get my kubernetes cluster of three Raspberry Pi computers running. This guide
 addresses much of the troubleshooting done to fill the gaps and/or &ldquo;bugs&rdquo; on
 <a href="https://blog.hypriot.com/post/setup-kubernetes-raspberry-pi-cluster/">this blog entry</a> and applying it to my setup.</p>
-<p>Also credit to <a href="https://github.com/alexellis/k8s-on-raspbian/blob/master/GUIDE.md">Alex Ellis&rsquo; Guide</a> for some of the kubernetes troubleshooting.</p>
+<p>Also credit to <a href="https://github.com/alexellis/k8s-on-raspbian/blob/master/GUIDE.md">Alex Ellis' Guide</a> for some of the kubernetes troubleshooting.</p>
 <h2 id="assumptions">Assumptions</h2>
 <ul>
 <li>You have more than 1 Raspberry Pi with at least an 8GB SD card for each</li>
@@ -199,63 +199,63 @@ for SSH <code>authorized_keys</code> with your SSH public key</strong>:</p>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#75715e">#cloud-config</span>
 
-<span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#66d9ef">hostname</span>: pi1
-</span>    <span style="color:#66d9ef">apt_preserve_sources_list</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#66d9ef">manage_etc_hosts</span>: <span style="color:#66d9ef">true</span>
+<span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#f92672">hostname</span>: <span style="color:#ae81ff">pi1</span>
+</span>    <span style="color:#f92672">apt_preserve_sources_list</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">manage_etc_hosts</span>: <span style="color:#66d9ef">true</span>
 
-    <span style="color:#66d9ef">resize_rootfs</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#66d9ef">growpart</span>:
-        <span style="color:#66d9ef">mode</span>: auto
-        <span style="color:#66d9ef">devices</span>: [<span style="color:#e6db74">&#34;/&#34;</span>]
-        <span style="color:#66d9ef">ignore_growroot_disabled</span>: <span style="color:#66d9ef">false</span>
+    <span style="color:#f92672">resize_rootfs</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">growpart</span>:
+        <span style="color:#f92672">mode</span>: <span style="color:#ae81ff">auto</span>
+        <span style="color:#f92672">devices</span>: [<span style="color:#e6db74">&#34;/&#34;</span>]
+        <span style="color:#f92672">ignore_growroot_disabled</span>: <span style="color:#66d9ef">false</span>
 
-    <span style="color:#66d9ef">locale</span>: <span style="color:#e6db74">&#34;en_US.UTF-8&#34;</span>
-    <span style="color:#66d9ef">timezone</span>: <span style="color:#e6db74">&#34;America/Los_Angeles&#34;</span>
+    <span style="color:#f92672">locale</span>: <span style="color:#e6db74">&#34;en_US.UTF-8&#34;</span>
+    <span style="color:#f92672">timezone</span>: <span style="color:#e6db74">&#34;America/Los_Angeles&#34;</span>
 
-    <span style="color:#66d9ef">package_update</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#66d9ef">package_upgrade</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#66d9ef">package_reboot_if_required</span>: <span style="color:#66d9ef">true</span>
-    <span style="color:#66d9ef">packages</span>:
-      - ntp
+    <span style="color:#f92672">package_update</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">package_upgrade</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">package_reboot_if_required</span>: <span style="color:#66d9ef">true</span>
+    <span style="color:#f92672">packages</span>:
+      - <span style="color:#ae81ff">ntp</span>
 
-    <span style="color:#66d9ef">users</span>:
-<span style="display:block;width:100%;background-color:#3c3d38">      - <span style="color:#66d9ef">name</span>: pi
-</span>        <span style="color:#66d9ef">primary-group</span>: users
-        <span style="color:#66d9ef">shell</span>: /bin/bash
-        <span style="color:#66d9ef">sudo</span>: ALL=(ALL) NOPASSWD:ALL
-        <span style="color:#66d9ef">groups</span>: users,docker,adm,dialout,audio,plugdev,netdev,video
-        <span style="color:#66d9ef">ssh-import-id</span>: None
-        <span style="color:#66d9ef">lock_passwd</span>: <span style="color:#66d9ef">true</span>
-        <span style="color:#66d9ef">ssh-authorized-keys</span>:
-<span style="display:block;width:100%;background-color:#3c3d38">          - ssh-rsa AAAA_SSH_PUBLIC_KEY_NNNN
+    <span style="color:#f92672">users</span>:
+<span style="display:block;width:100%;background-color:#3c3d38">      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">pi</span>
+</span>        <span style="color:#f92672">primary-group</span>: <span style="color:#ae81ff">users</span>
+        <span style="color:#f92672">shell</span>: <span style="color:#ae81ff">/bin/bash</span>
+        <span style="color:#f92672">sudo</span>: <span style="color:#ae81ff">ALL=(ALL) NOPASSWD:ALL</span>
+        <span style="color:#f92672">groups</span>: <span style="color:#ae81ff">users,docker,adm,dialout,audio,plugdev,netdev,video</span>
+        <span style="color:#f92672">ssh-import-id</span>: <span style="color:#ae81ff">None</span>
+        <span style="color:#f92672">lock_passwd</span>: <span style="color:#66d9ef">true</span>
+        <span style="color:#f92672">ssh-authorized-keys</span>:
+<span style="display:block;width:100%;background-color:#3c3d38">          - <span style="color:#ae81ff">ssh-rsa AAAA_SSH_PUBLIC_KEY_NNNN</span>
 </span>
-    <span style="color:#66d9ef">write_files</span>:
-      - <span style="color:#66d9ef">content</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">          allow-hotplug wlan0</span>
-          iface wlan0 inet static
-<span style="display:block;width:100%;background-color:#3c3d38">            address <span style="color:#ae81ff">192.168.1.101</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">            netmask <span style="color:#ae81ff">255.255.255.0</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">            gateway <span style="color:#ae81ff">192.168.1.1</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">            dns-nameservers <span style="color:#ae81ff">8.8.8.8</span> <span style="color:#ae81ff">8.8.4.4</span>
-</span>          wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-          iface default inet static
-        <span style="color:#66d9ef">path</span>: /etc/network/interfaces.d/wlan0
-      - <span style="color:#66d9ef">content</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">          country=de</span>
-          ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-          update_config=<span style="color:#ae81ff">1</span>
-          network={
-<span style="display:block;width:100%;background-color:#3c3d38">            ssid=<span style="color:#e6db74">&#34;WIFI_SSID&#34;</span>
-</span><span style="display:block;width:100%;background-color:#3c3d38">            psk=<span style="color:#e6db74">&#34;WIFI_PASSWORD&#34;</span>
-</span>            proto=RSN
-            key_mgmt=WPA-PSK
-            pairwise=CCMP
-            auth_alg=OPEN
-          }
-        <span style="color:#66d9ef">path</span>: /etc/wpa_supplicant/wpa_supplicant.conf
+    <span style="color:#f92672">write_files</span>:
+      - <span style="color:#f92672">content</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">          allow-hotplug wlan0
+</span><span style="color:#e6db74">          iface wlan0 inet static
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#e6db74">            address 192.168.1.101
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#e6db74">            netmask 255.255.255.0
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#e6db74">            gateway 192.168.1.1
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#e6db74">            dns-nameservers 8.8.8.8 8.8.4.4
+</span></span><span style="color:#e6db74">          wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+</span><span style="color:#e6db74">          iface default inet static</span>          
+        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/etc/network/interfaces.d/wlan0</span>
+      - <span style="color:#f92672">content</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">          country=de
+</span><span style="color:#e6db74">          ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+</span><span style="color:#e6db74">          update_config=1
+</span><span style="color:#e6db74">          network={
+</span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#e6db74">            ssid=&#34;WIFI_SSID&#34;
+</span></span><span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#e6db74">            psk=&#34;WIFI_PASSWORD&#34;
+</span></span><span style="color:#e6db74">            proto=RSN
+</span><span style="color:#e6db74">            key_mgmt=WPA-PSK
+</span><span style="color:#e6db74">            pairwise=CCMP
+</span><span style="color:#e6db74">            auth_alg=OPEN
+</span><span style="color:#e6db74">          }</span>          
+        <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/etc/wpa_supplicant/wpa_supplicant.conf</span>
 
-    <span style="color:#66d9ef">runcmd</span>:
-      - [ systemctl, restart, avahi-daemon ]
+    <span style="color:#f92672">runcmd</span>:
+      - [ <span style="color:#ae81ff">systemctl, restart, avahi-daemon ]</span>
     </code></pre></td></tr></table>
 </div>
 </div>

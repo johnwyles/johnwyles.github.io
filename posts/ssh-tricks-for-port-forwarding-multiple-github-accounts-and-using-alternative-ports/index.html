@@ -3,7 +3,7 @@
   <head>
     <title>SSH tricks for port forwarding, multiple GitHub accounts, and  using alternative ports // John Wyles dot github dot io</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.71.0" />
+    <meta name="generator" content="Hugo 0.82.0" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="John Doe" />
     <meta name="description" content="" />
@@ -254,16 +254,16 @@ account and respective SSH private key.  I specify each of these in the
 </span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
 <pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># GitHub identity for personal</span>
-<span style="display:block;width:100%;background-color:#3c3d38">Host github.com-johnwyles
-</span>    HostName github.com
-<span style="display:block;width:100%;background-color:#3c3d38">    IdentityFile ~/.ssh/johnwyles.rsa
-</span>    User git
+<span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff">Host github.com-johnwyles</span>
+</span>    <span style="color:#ae81ff">HostName github.com</span>
+<span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#ae81ff">IdentityFile ~/.ssh/johnwyles.rsa</span>
+</span>    <span style="color:#ae81ff">User git</span>
 
 <span style="color:#75715e"># GitHub identity for work</span>
-<span style="display:block;width:100%;background-color:#3c3d38">Host github.com-johnwyles-work
-</span>    HostName github.com
-<span style="display:block;width:100%;background-color:#3c3d38">    IdentityFile ~/.ssh/johnwyles-work.rsa
-</span>    User git</code></pre></td></tr></table>
+<span style="display:block;width:100%;background-color:#3c3d38"><span style="color:#ae81ff">Host github.com-johnwyles-work</span>
+</span>    <span style="color:#ae81ff">HostName github.com</span>
+<span style="display:block;width:100%;background-color:#3c3d38">    <span style="color:#ae81ff">IdentityFile ~/.ssh/johnwyles-work.rsa</span>
+</span>    <span style="color:#ae81ff">User git</span></code></pre></td></tr></table>
 </div>
 </div>
 <p>Then in each respective git checkout for a particular repository or project I
@@ -296,28 +296,28 @@ the <code>github.com</code> is suffixed with <code>-johnwyles</code> as we speci
 </span><span style="display:block;width:100%;background-color:#3c3d38"><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
 </span></span></code></pre></td>
 <td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
-<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">[core]
-     repositoryformatversion = <span style="color:#ae81ff">0</span>
-     filemode = <span style="color:#66d9ef">true</span>
-     bare = <span style="color:#66d9ef">false</span>
-     logallrefupdates = <span style="color:#66d9ef">true</span>
-     ignorecase = <span style="color:#66d9ef">true</span>
- [remote <span style="color:#e6db74">&#34;origin&#34;</span>]
+<pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">[<span style="color:#ae81ff">core]</span>
+     <span style="color:#ae81ff">repositoryformatversion = 0</span>
+     <span style="color:#ae81ff">filemode = true</span>
+     <span style="color:#ae81ff">bare = false</span>
+     <span style="color:#ae81ff">logallrefupdates = true</span>
+     <span style="color:#ae81ff">ignorecase = true</span>
+ [<span style="color:#ae81ff">remote &#34;origin&#34;]</span>
     <span style="color:#75715e"># Note the suffix below to github.com</span>
-<span style="display:block;width:100%;background-color:#3c3d38">     url = git@github.com-johnwyles:johnwyles/johnwyles.github.io-hugo.git
-</span>     fetch = +refs/heads/<span style="color:#75715e">*:refs/remotes/origin/*</span>
- [branch <span style="color:#e6db74">&#34;master&#34;</span>]
-     remote = origin
-     merge = refs/heads/master
- [submodule <span style="color:#e6db74">&#34;public&#34;</span>]
+<span style="display:block;width:100%;background-color:#3c3d38">     <span style="color:#ae81ff">url = git@github.com-johnwyles:johnwyles/johnwyles.github.io-hugo.git</span>
+</span>     <span style="color:#ae81ff">fetch = +refs/heads/*:refs/remotes/origin/*</span>
+ [<span style="color:#ae81ff">branch &#34;master&#34;]</span>
+     <span style="color:#ae81ff">remote = origin</span>
+     <span style="color:#ae81ff">merge = refs/heads/master</span>
+ [<span style="color:#ae81ff">submodule &#34;public&#34;]</span>
     <span style="color:#75715e"># A submodule I have for this directory also should have the suffix added</span>
-<span style="display:block;width:100%;background-color:#3c3d38">     url = git@github.com-johnwyles:johnwyles/johnwyles.github.io.git
-</span>     active = <span style="color:#66d9ef">true</span>
-[user]
+<span style="display:block;width:100%;background-color:#3c3d38">     <span style="color:#ae81ff">url = git@github.com-johnwyles:johnwyles/johnwyles.github.io.git</span>
+</span>     <span style="color:#ae81ff">active = true</span>
+[<span style="color:#ae81ff">user]</span>
     <span style="color:#75715e"># Personal or work email address</span>
-<span style="display:block;width:100%;background-color:#3c3d38">	email = john@johnwyles.com
+<span style="display:block;width:100%;background-color:#3c3d38">	<span style="color:#ae81ff">email = john@johnwyles.com</span>
 </span>    <span style="color:#75715e"># Probably will not change from project to project</span>
-<span style="display:block;width:100%;background-color:#3c3d38">	name = John Wyles</span></code></pre></td></tr></table>
+<span style="display:block;width:100%;background-color:#3c3d38">	<span style="color:#ae81ff">name = John Wyles</span></span></code></pre></td></tr></table>
 </div>
 </div>
 <p>That should take you pretty far! Good luck!</p>

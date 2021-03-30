@@ -6,10 +6,15 @@
     <description>Recent content in Posts on John Wyles dot github dot io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 09 Apr 2019 15:12:05 -0700</lastBuildDate>
-    
-	<atom:link href="https://johnwyles.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Mon, 29 Mar 2021 18:12:18 -0700</lastBuildDate><atom:link href="https://johnwyles.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setting Up Raspberry Pi With an OLED Display</title>
+      <link>https://johnwyles.github.io/posts/setting-up-raspberry-pi-with-an-oled-display/</link>
+      <pubDate>Mon, 29 Mar 2021 18:12:18 -0700</pubDate>
+      
+      <guid>https://johnwyles.github.io/posts/setting-up-raspberry-pi-with-an-oled-display/</guid>
+      <description>I purchased a SSD1351 from Adafruit for $40 and it has just been lying around collecting dust since all of my Arduino projects either didn&amp;rsquo;t require a display or the project parts I purchased already had one included. That isn&amp;rsquo;t cheap for something to not have a very dutiful purpose sitting around so I decided to scope out a project. It wasn&amp;rsquo;t any surprise that I wasn&amp;rsquo;t the only one that came up with the idea of slapping it into my most resource heavy Raspberry Pi to monitor the system statistics.</description>
+    </item>
     
     <item>
       <title>Flashing the Creality Ender 3 with a Raspberry Pi</title>
@@ -37,7 +42,7 @@ As an aside to the main focus of this article I will describe what I found while
       
       <guid>https://johnwyles.github.io/posts/setting-up-kubernetes-and-openfaas-on-a-raspberry-pi-cluster-using-hypriot/</guid>
       <description>This guide uses a Hypriot blog entry as a massive starting point but goes further to show the steps I took in order to get my kubernetes cluster of three Raspberry Pi computers running. This guide addresses much of the troubleshooting done to fill the gaps and/or &amp;ldquo;bugs&amp;rdquo; on this blog entry and applying it to my setup.
-Also credit to Alex Ellis&amp;rsquo; Guide for some of the kubernetes troubleshooting.</description>
+Also credit to Alex Ellis&#39; Guide for some of the kubernetes troubleshooting.</description>
     </item>
     
   </channel>

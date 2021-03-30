@@ -1,38 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <url>
-    <loc>https://johnwyles.github.io/posts/flashing-the-creality-ender-3-with-a-raspberry-pi/</loc>
-    <lastmod>2019-04-09T15:12:05-07:00</lastmod>
-  </url>
-  
   <url>
     <loc>https://johnwyles.github.io/</loc>
-    <lastmod>2019-04-09T15:12:05-07:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-03-29T18:12:18-07:00</lastmod>
+  </url><url>
     <loc>https://johnwyles.github.io/posts/</loc>
+    <lastmod>2021-03-29T18:12:18-07:00</lastmod>
+  </url><url>
+    <loc>https://johnwyles.github.io/posts/setting-up-raspberry-pi-with-an-oled-display/</loc>
+    <lastmod>2021-03-29T18:12:18-07:00</lastmod>
+  </url><url>
+    <loc>https://johnwyles.github.io/posts/flashing-the-creality-ender-3-with-a-raspberry-pi/</loc>
     <lastmod>2019-04-09T15:12:05-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://johnwyles.github.io/posts/ssh-tricks-for-port-forwarding-multiple-github-accounts-and-using-alternative-ports/</loc>
     <lastmod>2019-03-30T21:41:06-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://johnwyles.github.io/posts/setting-up-kubernetes-and-openfaas-on-a-raspberry-pi-cluster-using-hypriot/</loc>
     <lastmod>2019-03-27T10:44:22-07:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://johnwyles.github.io/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://johnwyles.github.io/tags/</loc>
   </url>
-  
 </urlset>
